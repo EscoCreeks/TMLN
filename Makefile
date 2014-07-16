@@ -7,7 +7,7 @@ ref: ${Out}/ref.dict
 build:
 	mkdir $@
 build/tests: build
-	mkdir $@
+	mkdir -p $@
 
 ${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@

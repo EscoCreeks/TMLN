@@ -1,0 +1,11 @@
+BinDir="linux64"
+if [ `uname` = "Darwin" ]
+then
+   BinDir="macos"
+fi
+
+(
+cat - <<EOF
+RefCompiler = assignment/${BinDir}/TextMiningCompiler
+EOF
+) > Makefile.in

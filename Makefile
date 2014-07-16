@@ -4,7 +4,10 @@ Out = build
 
 ref: ${Out}/ref.dict
 
-${Out}/ref.dict: ${RefCompiler}
+build:
+	mkdir -f $@
+
+${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@
 
 .PHONY: ref

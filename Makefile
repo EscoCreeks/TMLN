@@ -6,13 +6,13 @@ ref: ${Out}/ref.dict
 
 build:
 	mkdir $@
-build/tests: build
+build/bench_output: build
 	mkdir -p $@
 
 ${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@
 
-bench: ref build/tests
-	./script/bench.sh tests/*.test
+bench: ref build/bench_output
+	./script/bench.sh tests/input/*.test
 
 .PHONY: ref bench

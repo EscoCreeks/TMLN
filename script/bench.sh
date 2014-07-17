@@ -14,8 +14,8 @@ fi
 until [ $# -eq 0 ]; do
     TESTFILE=$1
     TESTFILENAME=$(basename $TESTFILE)
-    REFOUTFILE=build/bench_output/$TESTFILENAME.ref.out
-    MYOUTFILE=build/bench_output/$TESTFILENAME.my.out
+    REFOUTFILE=build/tests/output/$TESTFILENAME.ref.out
+    MYOUTFILE=build/tests/output/$TESTFILENAME.my.out
     echo "================ $TESTFILENAME ================"
     echo -n "Ref time: ";
     (time -f"time: %e" $REFBIN $REFDICT < $TESTFILE > $REFOUTFILE) 2>&1 | grep time

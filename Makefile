@@ -20,7 +20,9 @@ build/tests/output: build
 ${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@
 
-build/test: tests/test.cc
+build/test: tests/test.cc build
 	${CXX} ${CFLAGS} ${LDFLAGS} -l gtest -o $@ $<
 
+clean:
+	${RM} -rf build
 .PHONY: ref bench test

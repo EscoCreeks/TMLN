@@ -26,3 +26,4 @@ build/test: tests/test.cc build
 clean:
 	${RM} -rf build
 .PHONY: ref bench test
+.PHONY: build/tests/test.xml

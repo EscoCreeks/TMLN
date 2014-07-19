@@ -2,7 +2,24 @@ Out = build
 
 -include Makefile.in
 
+CBIN = TextMiningCompiler
+ABIN = TextMiningApp
+
+CSRC = src/main.cc
+
+CXXFLAGS = -I include -std=c++11
+
+COBJS = ${CSRC:.cc=.o}
+
+all:  ${CBIN}
+
 ref: ${Out}/ref.dict
+
+${Out}/${CBIN}: ${COBJS}
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ $^
+
+${CBIN}: ${Out}/${CBIN}
+	cp $< $@
 
 bench: ref build/tests/output
 	./script/bench.sh tests/input/*.test
@@ -24,6 +41,7 @@ build/test: tests/test.cc build
 	${CXX} ${CFLAGS} ${LDFLAGS} -l gtest -o $@ $<
 
 clean:
-	${RM} -rf build
+	${RM} -rf build ${CBIN}
+
 .PHONY: ref bench test
 .PHONY: build/tests/test.xml

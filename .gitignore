@@ -1,2 +1,5 @@
 *.in
+*.o
+TextMiningCompiler
+TextMiningApp
 build

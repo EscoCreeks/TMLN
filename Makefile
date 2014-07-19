@@ -11,7 +11,7 @@ CXXFLAGS = -I include -std=c++11
 
 COBJS = ${CSRC:.cc=.o}
 
-all:  ${CBIN}
+all:  ${Out} ${CBIN}
 
 ref: ${Out}/ref.dict
 
@@ -29,8 +29,9 @@ test: build/tests/test.xml
 build/tests/test.xml: build/test
 	$< --gtest_output=xml:$@
 
-build:
+${Out}:
 	mkdir $@
+
 build/tests/output: build
 	mkdir -p $@
 

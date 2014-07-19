@@ -1,7 +1,5 @@
-#include <dict.hh>
-
 #include <common.hh>
-#include <cdawg.hh>
+#include <trie.hh>
 
 int main(void)
 {

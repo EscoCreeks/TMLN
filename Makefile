@@ -5,7 +5,7 @@ Out = build
 CBIN = TextMiningCompiler
 ABIN = TextMiningApp
 
-CSRC = src/main.cc
+CSRC = src/main.cc src/dict.cc;
 
 CXXFLAGS = -I include -std=c++11
 

@@ -1,8 +1,27 @@
 #include <common.hh>
 #include <trie.hh>
+#include <dict.hh>
 
-int main(void)
+int main(int argc, char** argv)
 {
-  std::cout << "HelloWorld!" << std::endl;
+  if (argc != 3)
+  {
+    std::cerr << "usage: " << argv[0]
+              << " /path/to/word/freq.txt /path/to/output/dict.bin"
+              << std::endl;
+    return 1;
+  }
+
+  std::string inputDictPath = argv[1];
+  std::string outputFilePath = argv[2];
+
+  std::ifstream inputDict(inputDictPath);
+  std::cout << "Parsing dict: " <<  inputDictPath << std::endl;
+  std::vector<Entry> entries = ParseDict(inputDict);
+
+  for (Entry e: entries)
+  {
+    std::cout << e.str << std::endl;
+  }
   return 0;
 }

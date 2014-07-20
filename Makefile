@@ -5,7 +5,7 @@ Out = build
 CBIN = TextMiningCompiler
 ABIN = TextMiningApp
 
-CSRC = src/main.cc src/dict.cc;
+CSRC = src/dict.cc src/trie.cc
 
 CXXFLAGS = -I include -std=c++11
 
@@ -16,18 +16,18 @@ all:  ${Out} ${CBIN}
 ref: ${Out}/ref.dict
 
 ${Out}/${CBIN}: ${COBJS}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ $^
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ $^ src/main.cc
 
 ${CBIN}: ${Out}/${CBIN}
 	cp $< $@
 
 bench: ref build/tests/output
-	./script/bench.sh tests/input/*.test
+	./script/bench.sh tests/input/*.tes
 
 test: build/tests/test.xml
 
-build/tests/test.xml: build/test
-	$< --gtest_output=xml:$@
+build/tests/test.xml: build/test ${CBIN}
+	$< --gtest_output=xml:$@ || true
 
 ${Out}:
 	mkdir $@
@@ -38,8 +38,8 @@ build/tests/output: build
 ${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@
 
-build/test: tests/test.cc build
-	${CXX} ${CFLAGS} ${LDFLAGS} -l gtest -o $@ $<
+build/test: tests/test.cc build ${CBIN}
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -l gtest -o $@ $< ${COBJS}
 
 clean:
 	${RM} -rf build ${CBIN}

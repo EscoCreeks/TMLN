@@ -1,4 +1,24 @@
 #include <gtest/gtest.h>
+#include <common.hh>
+#include <trie.hh>
+
+/*
+ * we suppose that the test are only run by the makefile and
+ * from the project root directory
+ */
+
+const std::string dictPath = "assignment/words.txt";
+
+TEST(Base, SimpleBuild)
+{
+  std::ifstream dictStream(dictPath);
+  ASSERT_TRUE(dictStream.is_open());
+  std::vector<Entry> dict(ParseDict(dictStream));
+  EXPECT_FALSE(dict.empty());
+
+  TrieBuilder tb(dict);
+  Trie t = tb.ParallelBuild();
+}
 
 int main(int argc, char **argv)
 {

@@ -7,12 +7,22 @@
 class Trie
 {
 public:
-  Trie(std::vector<Entry> dictEntry);
   Trie(std::string serializedPath);
 
+  void Save(std::ostream out);
+};
+
+class TrieBuilder
+{
+public:
+  TrieBuilder(const std::vector<Entry>& dict);
+  Trie Build();
+  Trie ParallelBuild();
+private:
   void Merge();
   void Compact();
-  void Save(std::ostream out);
+
+  std::vector<Entry> dict;
 };
 
 #endif /* !TRIE_HH */

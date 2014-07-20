@@ -17,6 +17,6 @@
 #include <iomanip>
 #include <stdexcept>
 
-#define NOT_IMPLEMENTED() throw std::runtime_error(std::string("Not implemented ")+__FUNCTION__);
+#define NOT_IMPLEMENTED() throw std::runtime_error(std::string("Not implemented ")+__FUNCTION__+" " __FILE__ ":"+std::to_string(__LINE__));
 
 #endif /* !COMMON_HH */

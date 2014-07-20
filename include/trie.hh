@@ -12,22 +12,22 @@ public:
   void Save(std::ostream out);
 };
 
+struct TrieNode
+{
+  std::map<std::string, TrieNode> edges;
+};
+
 class TrieBuilder
 {
 public:
   TrieBuilder(const std::vector<Entry>& dict);
-  Trie Build();
-  Trie ParallelBuild();
+  void Build();
+  void ParallelBuild();
 private:
   void Merge();
   void Compact();
-
   std::vector<Entry> _dict;
-};
-
-struct TrieNode
-{
-  std::map<std::string, TrieNode> childs;
+  TrieNode _root;
 };
 
 #endif /* !TRIE_HH */

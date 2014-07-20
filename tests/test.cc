@@ -17,7 +17,7 @@ TEST(Base, SimpleBuild)
   EXPECT_FALSE(dict.empty());
 
   TrieBuilder tb(dict);
-  Trie t = tb.ParallelBuild();
+  tb.ParallelBuild();
 }
 
 int main(int argc, char **argv)

@@ -8,11 +8,15 @@
 #include <iostream>
 #include <list>
 #include <numeric>
+#include <map>
 #include <vector>
 #include <queue>
 #include <cstdlib>
 #include <ctime>
 #include <random>
 #include <iomanip>
+#include <stdexcept>
+
+#define NOT_IMPLEMENTED() throw std::runtime_error(std::string("Not implemented ")+__FUNCTION__);
 
 #endif /* !COMMON_HH */

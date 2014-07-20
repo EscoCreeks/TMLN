@@ -22,7 +22,12 @@ private:
   void Merge();
   void Compact();
 
-  std::vector<Entry> dict;
+  std::vector<Entry> _dict;
+};
+
+struct TrieNode
+{
+  std::map<std::string, TrieNode> childs;
 };
 
 #endif /* !TRIE_HH */

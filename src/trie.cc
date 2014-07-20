@@ -2,32 +2,34 @@
 
 Trie::Trie(std::string serializedPath)
 {
-  throw "Not implemented";
+  NOT_IMPLEMENTED();
 }
 
 void Trie::Save(std::ostream out)
 {
-  throw "Not implemented";
+  NOT_IMPLEMENTED();
 }
 
 TrieBuilder::TrieBuilder(const std::vector<Entry>& dict)
+  : _dict(dict)
 {
-  throw "Not implemented";
 }
 
 Trie TrieBuilder::Build()
 {
-  throw "Not implemented (Coucou creeks)";
+  NOT_IMPLEMENTED();
 }
 Trie TrieBuilder::ParallelBuild()
 {
-  throw "Not implemented";
+  TrieNode root;
+
+  NOT_IMPLEMENTED();
 }
 void TrieBuilder::Merge()
 {
-  throw "Not implemented";
+  NOT_IMPLEMENTED();
 }
 void TrieBuilder::Compact()
 {
-  throw "Not implemented";
+  NOT_IMPLEMENTED();
 }

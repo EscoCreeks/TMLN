@@ -42,7 +42,7 @@ build/test: tests/test.cc build ${CBIN}
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -l gtest -o $@ $< ${COBJS}
 
 clean:
-	${RM} -rf build ${CBIN}
+	${RM} -rf build ${CBIN} ${COBJS}
 
 .PHONY: ref bench test
 .PHONY: build/tests/test.xml

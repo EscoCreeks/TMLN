@@ -23,5 +23,10 @@ int main(int argc, char** argv)
   {
     std::cout << e.str << std::endl;
   }
+
+  TrieBuilder trie = TrieBuilder(entries);
+  trie.ParallelBuild();
+  trie.ToGraphViz();
+
   return 0;
 }

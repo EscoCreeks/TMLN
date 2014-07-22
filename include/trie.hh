@@ -23,6 +23,7 @@ public:
   TrieBuilder(const std::vector<Entry>& dict);
   void Build();
   void ParallelBuild();
+  void ToGraphViz();
 private:
   void Merge();
   void Compact();

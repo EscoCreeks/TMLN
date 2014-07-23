@@ -42,7 +42,7 @@ build/test: tests/test.cc build ${CBIN} external/gtest/lib/libgtest.a
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -lgtest -o $@ $< ${COBJS}
 
 external/gtest/lib/libgtest.a:
-	cd external/gtest; ./configure; make
+	mkdir external/gtest/lib
 	cd external/gtest/lib; 	cmake ..; make
 
 clean:

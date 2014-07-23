@@ -38,8 +38,12 @@ build/tests/output: build
 ${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@
 
-build/test: tests/test.cc build ${CBIN}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -l gtest -o $@ $< ${COBJS}
+build/test: tests/test.cc build ${CBIN} external/gtest/lib/libgtest.a
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -lgtest -o $@ $< ${COBJS}
+
+external/gtest/lib/libgtest.a:
+	cd external/gtest; ./configure; make
+	cd external/gtest/lib; 	cmake ..; make
 
 clean:
 	${RM} -rf build ${CBIN} ${COBJS}

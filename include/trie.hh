@@ -15,6 +15,7 @@ public:
 struct TrieNode
 {
   std::map<std::string, TrieNode> edges;
+  bool isOutNode = false;
 };
 
 class TrieBuilder

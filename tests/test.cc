@@ -7,7 +7,18 @@
  * from the project root directory
  */
 
-const std::string dictPath = "assignment/words.txt";
+const std::string dictPath = "tests/dicts/dict05.txt";
+
+TEST(Base, ParralelBuild)
+{
+  std::ifstream dictStream(dictPath);
+  ASSERT_TRUE(dictStream.is_open());
+  std::vector<Entry> dict(ParseDict(dictStream));
+  EXPECT_FALSE(dict.empty());
+
+  TrieBuilder tb(dict);
+  tb.ParallelBuild();
+}
 
 TEST(Base, SimpleBuild)
 {
@@ -17,7 +28,7 @@ TEST(Base, SimpleBuild)
   EXPECT_FALSE(dict.empty());
 
   TrieBuilder tb(dict);
-  tb.ParallelBuild();
+  tb.Build();
 }
 
 int main(int argc, char **argv)

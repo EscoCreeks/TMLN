@@ -49,26 +49,29 @@ void TrieBuilder::Merge()
   NOT_IMPLEMENTED();
 }
 
-void CompactNode(TrieNode& prec, TrieNode& curr)
+void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr, std::map<std::string, TrieNode>::iterator &it)
 {
-  if (curr.edges.size() == 1)
+  if (curr.edges.size() == 1 && !curr.isOutNode)
   {
-    std::string key = prec.edges.begin()->first;
-    std::cout << "Merge " << key << " with " << curr.edges.begin()->first << std::endl;
-    prec.edges[key + curr.edges.begin()->first] =  curr.edges.begin()->second;
-    prec.edges.erase(key);
-    CompactNode(prec, curr.edges.begin()->second);
+    auto next = it;
+    ++next;
+    std::string newKey = keyFather + curr.edges.begin()->first;
+    prec.edges[newKey] = curr.edges.begin()->second;
+    prec.edges.erase(keyFather);
+    CompactNode(prec, newKey, prec.edges[newKey], it);
+    it = --next;
   }
   else {
     for (auto item : curr.edges)
-      CompactNode(curr, item.second);
+      CompactNode(curr, item.first, item.second, it);
   }
 }
 
 void TrieBuilder::Compact()
 {
-  for (auto item : _root.edges)
-    CompactNode(_root, item.second);
+  std::map<std::string, TrieNode>::iterator it;
+  for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
+    CompactNode(_root, it->first, it->second, it);
 }
 
 void NodeToGraphViz(std::ofstream& os, std::string prec, const TrieNode& node, int& nb, bool root)

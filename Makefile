@@ -39,7 +39,7 @@ ${Out}/ref.dict: ${RefCompiler} build
 	$< assignment/words.txt $@
 
 build/test: tests/test.cc build ${CBIN} external/gtest/lib/libgtest.a
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -o $@ $< ${COBJS} -lgtest
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -o $@ $< ${COBJS} -lgtest -lpthread
 
 external/gtest/lib/libgtest.a:
 	mkdir external/gtest/lib

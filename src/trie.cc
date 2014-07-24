@@ -70,7 +70,7 @@ void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
   }
 }
 
-void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
+void ParallelCompactNode(TrieNode& prec, const std::string keyFather, TrieNode& curr)
 {
   static std::mutex mutex;
   mutex.lock();
@@ -94,9 +94,9 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
       keys.push_back(item.first);
     for (int i = 0; i < keys.size(); ++i)
     {
-      std::string myKey = keys[i];
-      threads.push_back(std::thread([=](){
-            ParallelCompactNode(*(const_cast<TrieNode*>(&curr)), myKey, *(const_cast<TrieNode*>(&curr.edges.at(myKey))));
+      const std::string myKey = keys[i];
+      threads.push_back(std::thread([=,&curr](){
+            ParallelCompactNode(curr, myKey, curr.edges.at(myKey));
             }));
     }
     for (auto& th : threads)
@@ -127,7 +127,7 @@ void TrieBuilder::ParallelCompact()
 
   for (int i = 0; i < keys.size(); ++i)
   {
-    std::string myKey = keys[i];
+    const std::string myKey = keys[i];
     threads.push_back(std::thread([=](){
           ParallelCompactNode(_root, myKey, _root.edges[myKey]);
           }));

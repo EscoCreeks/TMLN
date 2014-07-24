@@ -50,22 +50,29 @@ void TrieBuilder::Merge()
   NOT_IMPLEMENTED();
 }
 
-void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr, std::map<std::string, TrieNode>::iterator &it)
+void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
 {
-  if (curr.edges.size() == 1 && !curr.isOutNode)
+  std::cout << "Entering with " << keyFather << std::endl;
+  if (curr.edges.size() == 1)
   {
-    auto next = it;
-    ++next;
     std::string newKey = keyFather + curr.edges.begin()->first;
+    std::cout << "Merging " << keyFather << " with " << curr.edges.begin()->first << std::endl;
     prec.edges[newKey] = curr.edges.begin()->second;
     prec.edges.erase(keyFather);
-    CompactNode(prec, newKey, prec.edges[newKey], it);
-    it = --next;
+    CompactNode(prec, newKey, prec.edges[newKey]);
   }
   else {
-    for (auto item : curr.edges)
-      CompactNode(curr, item.first, item.second, it);
+    std::map<std::string, TrieNode>::iterator it;
+    std::vector<std::string> keys;
+    for (it = curr.edges.begin(); it != curr.edges.end(); ++it)
+      keys.push_back(it->first);
+
+    for (int i = 0; i < keys.size(); ++i)
+    {
+      CompactNode(curr, keys[i], curr.edges[keys[i]]);
+    }
   }
+  std::cout << "Leaving " << keyFather << std::endl;
 }
 
 void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
@@ -80,7 +87,6 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
     std::string newKey = keyFather + curr.edges.begin()->first;
     prec.edges[newKey] = curr.edges.begin()->second;
     prec.edges.erase(keyFather);
-    mutex.unlock();
     ParallelCompactNode(prec, newKey, prec.edges[newKey]);
   }
   else {
@@ -91,9 +97,8 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
     for (int i = 0; i < keys.size(); ++i)
     {
       std::string myKey = keys[i];
-      // PROBABLY BUGGY HERE, NEED TEST
-      threads.push_back(std::thread([&](){
-            ParallelCompactNode(curr, myKey, curr.edges[myKey]);
+      threads.push_back(std::thread([=](){
+            ParallelCompactNode(*(const_cast<TrieNode*>(&curr)), myKey, *(const_cast<TrieNode*>(&curr.edges.at(myKey))));
             }));
     }
     for (auto& th : threads)
@@ -104,8 +109,14 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
 void TrieBuilder::Compact()
 {
   std::map<std::string, TrieNode>::iterator it;
+  std::vector<std::string> keys;
   for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
-    CompactNode(_root, it->first, it->second, it);
+    keys.push_back(it->first);
+
+  for (int i = 0; i < keys.size(); ++i)
+  {
+    CompactNode(_root, keys[i], _root.edges[keys[i]]);
+  }
 }
 
 void TrieBuilder::ParallelCompact()
@@ -127,24 +138,18 @@ void TrieBuilder::ParallelCompact()
     th.join();
 }
 
-void NodeToGraphViz(std::ofstream& os, std::string prec, const TrieNode& node, int& nb, bool root)
+void NodeToGraphViz(std::ofstream& os, std::string prec, const TrieNode& node, int nbPrec, int& nbCurr)
 {
-  const int n = root ? 0 : nb;
-  bool used = false;
-  for (auto item : node.edges){
-    used = true;
-    if (node.isOutNode){
-      os << ++nb << " [shape=doublecircle]" << std::endl;
-      os << n << " -> " << nb << " [label=" << prec << "]" << std::endl;
-    }
-    else {
-      os << n << " -> " << ++nb << " [label=" << prec << "]" << std::endl;
-    }
-    NodeToGraphViz(os, item.first, item.second, nb, false);
+  if (node.isOutNode){
+    os << ++nbCurr << " [shape=doublecircle]" << std::endl;
+    os << nbPrec << " -> " << nbCurr << " [label=" << prec << "]" << std::endl;
   }
-  if (node.isOutNode && !used){
-    os << ++nb << " [shape=doublecircle]" << std::endl;
-    os << n << " -> " << nb << " [label=" << prec << "]" << std::endl;
+  else {
+    os << nbPrec << " -> " << ++nbCurr << " [label=" << prec << "]" << std::endl;
+  }
+    int n = nbCurr;
+  for (auto item : node.edges){
+    NodeToGraphViz(os, item.first, item.second, n, ++nbCurr);
   }
 }
 
@@ -153,10 +158,9 @@ void TrieBuilder::ToGraphViz()
   std::ofstream file("builder.dot", std::ios::out | std::ios::trunc);
   if (file.is_open()){
     file << "digraph triebuilder {" << std::endl;
-    //std::map<std::string, int> occ;
     int nb = 0;
     for (auto item : _root.edges){
-      NodeToGraphViz(file, item.first, item.second, nb, true);
+      NodeToGraphViz(file, item.first, item.second, 0, ++nb);
     }
     file << "}";
   }

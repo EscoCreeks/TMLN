@@ -42,6 +42,7 @@ void TrieBuilder::ParallelBuild()
   {
     PAddTrie(root, entry);
   }
+  ParallelCompact();
 }
 
 void TrieBuilder::Merge()
@@ -67,11 +68,58 @@ void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr, std::map
   }
 }
 
+void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
+{
+  static std::mutex mutex;
+  mutex.lock();
+  std::cout << std::this_thread::get_id() << std::endl;
+  mutex.unlock();
+  if (curr.edges.size() == 1 && !curr.isOutNode)
+  {
+    std::string newKey = keyFather + curr.edges.begin()->first;
+    prec.edges[newKey] = curr.edges.begin()->second;
+    prec.edges.erase(keyFather);
+    mutex.unlock();
+    ParallelCompactNode(prec, newKey, prec.edges[newKey]);
+  }
+  else {
+    std::vector<std::thread> threads;
+    std::vector<std::string> keys;
+    for (auto item : curr.edges)
+      keys.push_back(item.first);
+    for (auto key : keys)
+    {
+      threads.push_back(std::thread([&](){
+            ParallelCompactNode(curr, key, curr.edges[key]);
+            }));
+    }
+    for (auto& th : threads)
+      th.join();
+  }
+}
+
 void TrieBuilder::Compact()
 {
   std::map<std::string, TrieNode>::iterator it;
   for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
     CompactNode(_root, it->first, it->second, it);
+}
+
+void TrieBuilder::ParallelCompact()
+{
+  std::map<std::string, TrieNode>::iterator it;
+  std::vector<std::thread> threads;
+  std::vector<std::string> keys;
+  for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
+    keys.push_back(it->first);
+  for (auto key : keys)
+  {
+    threads.push_back(std::thread([&](){
+          ParallelCompactNode(_root, key, _root.edges[key]);
+          }));
+  }
+  for (auto& th : threads)
+    th.join();
 }
 
 void NodeToGraphViz(std::ofstream& os, std::string prec, const TrieNode& node, int& nb, bool root)

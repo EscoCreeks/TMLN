@@ -28,6 +28,7 @@ public:
 private:
   void Merge();
   void Compact();
+  void ParallelCompact();
   std::vector<Entry> _dict;
   TrieNode _root;
 };

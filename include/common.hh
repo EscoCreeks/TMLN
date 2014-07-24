@@ -16,6 +16,7 @@
 #include <random>
 #include <iomanip>
 #include <stdexcept>
+#include <thread>
 
 #define NOT_IMPLEMENTED() throw std::runtime_error(std::string("Not implemented ")+__FUNCTION__+" " __FILE__ ":"+std::to_string(__LINE__));
 

@@ -73,6 +73,7 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
   static std::mutex mutex;
   mutex.lock();
   std::cout << std::this_thread::get_id() << std::endl;
+  std::cout << "Entering with " << keyFather << std::endl;
   mutex.unlock();
   if (curr.edges.size() == 1 && !curr.isOutNode)
   {
@@ -87,10 +88,12 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
     std::vector<std::string> keys;
     for (auto item : curr.edges)
       keys.push_back(item.first);
-    for (auto key : keys)
+    for (int i = 0; i < keys.size(); ++i)
     {
+      std::string myKey = keys[i];
+      // PROBABLY BUGGY HERE, NEED TEST
       threads.push_back(std::thread([&](){
-            ParallelCompactNode(curr, key, curr.edges[key]);
+            ParallelCompactNode(curr, myKey, curr.edges[myKey]);
             }));
     }
     for (auto& th : threads)
@@ -112,10 +115,12 @@ void TrieBuilder::ParallelCompact()
   std::vector<std::string> keys;
   for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
     keys.push_back(it->first);
-  for (auto key : keys)
+
+  for (int i = 0; i < keys.size(); ++i)
   {
-    threads.push_back(std::thread([&](){
-          ParallelCompactNode(_root, key, _root.edges[key]);
+    std::string myKey = keys[i];
+    threads.push_back(std::thread([=](){
+          ParallelCompactNode(_root, myKey, _root.edges[myKey]);
           }));
   }
   for (auto& th : threads)

@@ -7,32 +7,39 @@
  * from the project root directory
  */
 
-const std::string dictPath = "tests/dicts/dict05.txt";
 
-TEST(Base, ParralelBuild)
+class Base : public testing::Test
 {
-  std::ifstream dictStream(dictPath);
-  ASSERT_TRUE(dictStream.is_open());
-  std::vector<Entry> dict(ParseDict(dictStream));
-  EXPECT_FALSE(dict.empty());
+protected:
+  virtual void SetUp()
+  {
+    std::ifstream dictStream(dictPath);
+    ASSERT_TRUE(dictStream.is_open());
+    std::vector<Entry> dict(ParseDict(dictStream));
+    EXPECT_FALSE(dict.empty());
+    RecordProperty("EntryCount", dict.size());
+  }
 
-  TrieBuilder tb(dict);
-  tb.ParallelBuild();
-}
+  std::vector<Entry> dict;
 
-TEST(Base, SimpleBuild)
+private:
+  const std::string dictPath = "tests/dicts/dict05.txt";
+};
+
+TEST_F(Base, SimpleBuild)
 {
-  std::ifstream dictStream(dictPath);
-  ASSERT_TRUE(dictStream.is_open());
-  std::vector<Entry> dict(ParseDict(dictStream));
-  EXPECT_FALSE(dict.empty());
-
   TrieBuilder tb(dict);
   tb.Build();
 }
 
+TEST_F(Base, ParralelBuild)
+{
+  TrieBuilder tb(dict);
+  tb.ParallelBuild();
+}
+
 int main(int argc, char **argv)
 {
-  ::testing::InitGoogleTest(&argc, argv);
+  testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

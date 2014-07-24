@@ -52,11 +52,9 @@ void TrieBuilder::Merge()
 
 void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
 {
-  std::cout << "Entering with " << keyFather << std::endl;
   if (curr.edges.size() == 1)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
-    std::cout << "Merging " << keyFather << " with " << curr.edges.begin()->first << std::endl;
     prec.edges[newKey] = curr.edges.begin()->second;
     prec.edges.erase(keyFather);
     CompactNode(prec, newKey, prec.edges[newKey]);
@@ -68,11 +66,8 @@ void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
       keys.push_back(it->first);
 
     for (int i = 0; i < keys.size(); ++i)
-    {
       CompactNode(curr, keys[i], curr.edges[keys[i]]);
-    }
   }
-  std::cout << "Leaving " << keyFather << std::endl;
 }
 
 void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
@@ -82,10 +77,13 @@ void ParallelCompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
   std::cout << std::this_thread::get_id() << std::endl;
   std::cout << "Entering with " << keyFather << std::endl;
   mutex.unlock();
-  if (curr.edges.size() == 1 && !curr.isOutNode)
+  if (curr.edges.size() == 1)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
     prec.edges[newKey] = curr.edges.begin()->second;
+    mutex.lock();
+    std::cout << "Merging " << keyFather << " with " << curr.edges.begin()->first << std::endl;
+    mutex.unlock();
     prec.edges.erase(keyFather);
     ParallelCompactNode(prec, newKey, prec.edges[newKey]);
   }

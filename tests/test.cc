@@ -38,6 +38,12 @@ TEST_F(Base, ParralelBuild)
   tb.ParallelBuild();
 }
 
+TEST_F(Base, Cpp11ParralelBuild)
+{
+  LockfreeCpp11TrieBuilder tb(dict);
+  tb.Build();
+}
+
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);

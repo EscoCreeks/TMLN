@@ -33,4 +33,11 @@ private:
   TrieNode _root;
 };
 
+class LockfreeCpp11TrieBuilder : public TrieBuilder
+{
+public:
+  LockfreeCpp11TrieBuilder(std::vector<Entry>& dict);
+  void Build();
+};
+
 #endif /* !TRIE_HH */

@@ -1,4 +1,5 @@
 #include <trie.hh>
+#include <bench_tool.hh>
 
 Trie::Trie(std::string serializedPath)
 {
@@ -15,7 +16,7 @@ TrieBuilder::TrieBuilder(const std::vector<Entry>& dict)
 {
 }
 
-void PAddTrie(TrieNode& root, const Entry& entry)
+void AddTrie(TrieNode& root, const Entry& entry)
 {
   std::string word = entry.str;
   TrieNode* node = &root;
@@ -25,24 +26,48 @@ void PAddTrie(TrieNode& root, const Entry& entry)
   node->isOutNode = true;
 }
 
+void ParallelAddTrie(TrieNode& root, const Entry& entry)
+{
+  static std::mutex mutex;
+  std::string word = entry.str;
+  TrieNode* node = &root;
+  for (int i = 0; i < word.size(); ++i){
+    mutex.lock();
+    node = &node->edges[std::string(1,word[i])];
+    mutex.unlock();
+  }
+  node->isOutNode = true;
+}
+
 void TrieBuilder::Build()
 {
-  TrieNode& root = _root;
-  for (const Entry& entry : _dict)
   {
-    PAddTrie(root, entry);
+    time_guard tg("construction: ");
+    TrieNode& root = _root;
+    for (const Entry& entry : _dict)
+    {
+      AddTrie(root, entry);
+    }
   }
-  Compact();
+  {
+    time_guard tg("compaction: ");
+    Compact();
+  }
 }
 
 void TrieBuilder::ParallelBuild()
 {
   TrieNode& root = _root;
-  for (const Entry& entry : _dict)
-  {
-    PAddTrie(root, entry);
-  }
-  ParallelCompact();
+    std::vector<std::thread> threads;
+    for (const Entry& entry : _dict)
+    {
+      threads.push_back(std::thread([=,&root](){
+            ParallelAddTrie(root, entry);
+            }));
+    }
+    for (auto& th: threads)
+      th.join();
+    ParallelCompact();
 }
 
 void TrieBuilder::Merge()
@@ -72,18 +97,10 @@ void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
 
 void ParallelCompactNode(TrieNode& prec, const std::string keyFather, TrieNode& curr)
 {
-  static std::mutex mutex;
-  mutex.lock();
-  std::cout << std::this_thread::get_id() << std::endl;
-  std::cout << "Entering with " << keyFather << std::endl;
-  mutex.unlock();
   if (curr.edges.size() == 1 && !curr.isOutNode)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
     prec.edges[newKey] = curr.edges.begin()->second;
-    mutex.lock();
-    std::cout << "Merging " << keyFather << " with " << curr.edges.begin()->first << std::endl;
-    mutex.unlock();
     prec.edges.erase(keyFather);
     ParallelCompactNode(prec, newKey, prec.edges[newKey]);
   }

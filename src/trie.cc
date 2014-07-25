@@ -52,7 +52,7 @@ void TrieBuilder::Merge()
 
 void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
 {
-  if (curr.edges.size() == 1)
+  if (curr.edges.size() == 1 && !curr.isOutNode)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
     prec.edges[newKey] = curr.edges.begin()->second;
@@ -77,7 +77,7 @@ void ParallelCompactNode(TrieNode& prec, const std::string keyFather, TrieNode& 
   std::cout << std::this_thread::get_id() << std::endl;
   std::cout << "Entering with " << keyFather << std::endl;
   mutex.unlock();
-  if (curr.edges.size() == 1)
+  if (curr.edges.size() == 1 && !curr.isOutNode)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
     prec.edges[newKey] = curr.edges.begin()->second;

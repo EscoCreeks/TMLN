@@ -1,6 +1,7 @@
 #include <common.hh>
 #include <trie.hh>
 #include <dict.hh>
+#include <bench_tool.hh>
 
 int main(int argc, char** argv)
 {
@@ -19,14 +20,16 @@ int main(int argc, char** argv)
   std::cout << "Parsing dict: " <<  inputDictPath << std::endl;
   std::vector<Entry> entries = ParseDict(inputDict);
 
-  for (Entry e: entries)
   {
-    std::cout << e.str << std::endl;
+    TrieBuilder trie = TrieBuilder(entries);
+    time_guard tg ("parallel build: ");
+    trie.ParallelBuild();
   }
-
-  TrieBuilder trie = TrieBuilder(entries);
-  trie.ParallelBuild();
-  trie.ToGraphViz();
+  {
+    TrieBuilder trie = TrieBuilder(entries);
+    time_guard tg ("simple build: ");
+    trie.Build();
+  }
 
   return 0;
 }

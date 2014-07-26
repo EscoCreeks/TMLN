@@ -39,17 +39,17 @@ TEST_F(Base, LockedParralelBuild)
   tb.Build();
 }
 
-// TEST_F(Base, LockFreeCpp11ParralelBuild)
-// {
-//   LockfreeCpp11TrieBuilder tb(dict);
-//   tb.Build();
-// }
+TEST_F(Base, LockFreeCpp11ParralelBuild)
+{
+  LockfreeCpp11TrieBuilder tb(dict);
+  tb.Build();
+}
 
-// TEST_F(Base, TbbParralelBuild)
-// {
-//   TbbParallelTrieBuilder tb(dict);
-//   tb.Build();
-// }
+TEST_F(Base, TbbParralelBuild)
+{
+  TbbParallelTrieBuilder tb(dict);
+  tb.Build();
+}
 
 int main(int argc, char **argv)
 {

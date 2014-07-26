@@ -4,3 +4,4 @@ TextMiningCompiler
 TextMiningApp
 build
 external
+*.deps

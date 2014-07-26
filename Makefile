@@ -9,6 +9,8 @@ CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/lockfreecpp11triebui
 
 CXXFLAGS = -I include -std=c++11
 
+LDFLAGS = -ltbb
+
 COBJS = ${CSRC:.cc=.o}
 
 all:  ${Out} ${CBIN}

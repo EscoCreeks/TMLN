@@ -33,7 +33,7 @@ bench: ref build/tests/output
 
 test: build/tests/test.xml
 
-build/tests/test.xml: ${CBIN} build/test
+build/tests/test.xml:  build/test ${CBIN}
 	$< --gtest_output=xml:$@ || true
 
 ${Out}:

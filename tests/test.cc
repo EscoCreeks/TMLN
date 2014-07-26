@@ -28,19 +28,25 @@ private:
 
 TEST_F(Base, SimpleBuild)
 {
-  TrieBuilder tb(dict);
+  SimpleTrieBuilder tb(dict);
   tb.Build();
 }
 
-TEST_F(Base, ParralelBuild)
+TEST_F(Base, LockedParralelBuild)
 {
-  TrieBuilder tb(dict);
-  tb.ParallelBuild();
+  LockedCpp11TrieBuilder tb(dict);
+  tb.Build();
 }
 
-TEST_F(Base, Cpp11ParralelBuild)
+TEST_F(Base, LockFreeCpp11ParralelBuild)
 {
   LockfreeCpp11TrieBuilder tb(dict);
+  tb.Build();
+}
+
+TEST_F(Base, TbbParralelBuild)
+{
+  TbbParallelTrieBuilder tb(dict);
   tb.Build();
 }
 

@@ -30,7 +30,7 @@ class TrieBuilder
 public:
   TrieBuilder(const std::vector<Entry>& dict);
   virtual void Build();
-  void ToGraphViz();
+  void ToGraphViz(std::string fileName);
 private:
   void Merge();
   virtual void Compact();
@@ -69,6 +69,7 @@ class TbbParallelTrieBuilder : public TrieBuilder
 public:
   TbbParallelTrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
   void Build();
+  void TbbToGraphViz(std::string fileName);
 private:
   void Compact();
   TbbTrieNode _tbbRoot;

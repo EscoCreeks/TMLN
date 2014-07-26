@@ -45,9 +45,9 @@ void NodeToGraphViz(std::ofstream& os, std::string prec, const TrieNode& node, i
   }
 }
 
-void TrieBuilder::ToGraphViz()
+void TrieBuilder::ToGraphViz(std::string fileName)
 {
-  std::ofstream file("builder.dot", std::ios::out | std::ios::trunc);
+  std::ofstream file(fileName, std::ios::out | std::ios::trunc);
   if (file.is_open()){
     file << "digraph triebuilder {" << std::endl;
     int nb = 0;

@@ -10,7 +10,6 @@ void AddTrie(TbbTrieNode& root, const Entry& entry)
     trieNodeMap::accessor accessor;
     node->edges.insert(accessor, std::string(1,word[i]));
     node = &accessor->second;
-    //node = &node->edges.insert(std::string(1,word[i]));
   }
   node->isOutNode = true;
 }

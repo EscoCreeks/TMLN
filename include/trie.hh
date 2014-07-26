@@ -3,6 +3,7 @@
 
 #include <common.hh>
 #include <dict.hh>
+#include <tbb/concurrent_hash_map.h>
 
 class Trie
 {
@@ -15,6 +16,12 @@ public:
 struct TrieNode
 {
   std::map<std::string, TrieNode> edges;
+  bool isOutNode = false;
+};
+
+struct TbbTrieNode
+{
+  tbb::concurrent_hash_map<std::string, TbbTrieNode> edges;
   bool isOutNode = false;
 };
 
@@ -64,6 +71,7 @@ public:
   void Build();
 private:
   void Compact();
+  TbbTrieNode _tbbRoot;
 };
 
 #endif /* !TRIE_HH */

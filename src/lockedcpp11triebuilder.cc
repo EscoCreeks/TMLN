@@ -15,7 +15,9 @@ void ParallelAddTrie(TrieNode& root, const Entry& entry)
 
 void LockedCpp11TrieBuilder::Build()
 {
-  TrieNode& root = _root;
+  {
+    time_guard tg("locked construction: ");
+    TrieNode& root = _root;
     std::vector<std::thread> threads;
     for (const Entry& entry : _dict)
     {
@@ -25,7 +27,11 @@ void LockedCpp11TrieBuilder::Build()
     }
     for (auto& th: threads)
       th.join();
+  }
+  {
+    time_guard tg("locked compaction: ");
     Compact();
+  }
 }
 
 void ParallelCompactNode(TrieNode& prec, const std::string keyFather, TrieNode& curr)

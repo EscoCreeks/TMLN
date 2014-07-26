@@ -13,7 +13,7 @@ void AddTrie(TrieNode& root, const Entry& entry)
 void SimpleTrieBuilder::Build()
 {
   {
-    time_guard tg("construction: ");
+    time_guard tg("simple construction: ");
     TrieNode& root = _root;
     for (const Entry& entry : _dict)
     {
@@ -21,7 +21,7 @@ void SimpleTrieBuilder::Build()
     }
   }
   {
-    time_guard tg("compaction: ");
+    time_guard tg("simple compaction: ");
     Compact();
   }
 }

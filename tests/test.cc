@@ -16,6 +16,7 @@ protected:
     std::ifstream dictStream(dictPath);
     ASSERT_TRUE(dictStream.is_open());
     std::vector<Entry> dict(ParseDict(dictStream));
+    dictStream.close();
     EXPECT_FALSE(dict.empty());
     RecordProperty("EntryCount", dict.size());
   }
@@ -38,17 +39,17 @@ TEST_F(Base, LockedParralelBuild)
   tb.Build();
 }
 
-TEST_F(Base, LockFreeCpp11ParralelBuild)
-{
-  LockfreeCpp11TrieBuilder tb(dict);
-  tb.Build();
-}
+// TEST_F(Base, LockFreeCpp11ParralelBuild)
+// {
+//   LockfreeCpp11TrieBuilder tb(dict);
+//   tb.Build();
+// }
 
-TEST_F(Base, TbbParralelBuild)
-{
-  TbbParallelTrieBuilder tb(dict);
-  tb.Build();
-}
+// TEST_F(Base, TbbParralelBuild)
+// {
+//   TbbParallelTrieBuilder tb(dict);
+//   tb.Build();
+// }
 
 int main(int argc, char **argv)
 {

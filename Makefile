@@ -8,27 +8,32 @@ ABIN = TextMiningApp
 CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/lockfreecpp11triebuilder.cc src/lockedcpp11triebuilder.cc src/tbbparalleltriebuilder.cc
 
 CXXFLAGS = -I include -std=c++11
-
 LDFLAGS = -ltbb
 
 COBJS = ${CSRC:.cc=.o}
+CDEPS = ${CSRC:.cc=.deps}
 
 all:  ${Out} ${CBIN}
 
 ref: ${Out}/ref.dict
 
-${Out}/${CBIN}: ${COBJS}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ $^ src/main.cc
+${Out}/${CBIN}: depend ${COBJS}
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS} src/main.cc
 
 ${CBIN}: ${Out}/${CBIN}
 	cp $< $@
+
+depend: ${CDEPS}
+
+%.deps: %.cc
+	${CXX} ${CXXFLAGS} -MM -MT ${<:.cc=.o} $< -o $@
 
 bench: ref build/tests/output
 	./script/bench.sh tests/input/*.tes
 
 test: build/tests/test.xml
 
-build/tests/test.xml: build/test ${CBIN}
+build/tests/test.xml: ${CBIN} build/test
 	$< --gtest_output=xml:$@ || true
 
 ${Out}:
@@ -48,7 +53,8 @@ external/gtest/lib/libgtest.a:
 	cd external/gtest/lib; 	cmake ..; make
 
 clean:
-	${RM} -rf build ${CBIN} ${COBJS}
+	echo ${COJBS}
+	${RM} -rf build ${CBIN} ${COBJS} ${CDEPS}
 
 .PHONY: ref bench test
 .PHONY: build/tests/test.xml

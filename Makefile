@@ -5,7 +5,7 @@ Out = build
 CBIN = TextMiningCompiler
 ABIN = TextMiningApp
 
-CSRC = src/dict.cc src/trie.cc src/lockfreecpp11triebuilder.cc
+CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/lockfreecpp11triebuilder.cc src/lockedcpp11triebuilder.cc src/tbbparalleltriebuilder.cc
 
 CXXFLAGS = -I include -std=c++11
 

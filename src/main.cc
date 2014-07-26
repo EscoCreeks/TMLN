@@ -1,7 +1,6 @@
 #include <common.hh>
 #include <trie.hh>
 #include <dict.hh>
-#include <bench_tool.hh>
 
 int main(int argc, char** argv)
 {
@@ -21,12 +20,12 @@ int main(int argc, char** argv)
   std::vector<Entry> entries = ParseDict(inputDict);
 
   {
-    TrieBuilder trie = TrieBuilder(entries);
+    LockedCpp11TrieBuilder trie = LockedCpp11TrieBuilder(entries);
     time_guard tg ("parallel build: ");
-    trie.ParallelBuild();
+    trie.Build();
   }
   {
-    TrieBuilder trie = TrieBuilder(entries);
+    SimpleTrieBuilder trie = SimpleTrieBuilder(entries);
     time_guard tg ("simple build: ");
     trie.Build();
   }

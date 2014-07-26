@@ -22,15 +22,32 @@ class TrieBuilder
 {
 public:
   TrieBuilder(const std::vector<Entry>& dict);
-  void Build();
-  void ParallelBuild();
+  virtual void Build();
   void ToGraphViz();
 private:
   void Merge();
-  void Compact();
-  void ParallelCompact();
+  virtual void Compact();
+protected:
   std::vector<Entry> _dict;
   TrieNode _root;
+};
+
+class SimpleTrieBuilder : public TrieBuilder
+{
+public:
+  SimpleTrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
+  void Build();
+private:
+  void Compact();
+};
+
+class LockedCpp11TrieBuilder : public TrieBuilder
+{
+public:
+  LockedCpp11TrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
+  void Build();
+private:
+  void Compact();
 };
 
 class LockfreeCpp11TrieBuilder : public TrieBuilder
@@ -38,6 +55,15 @@ class LockfreeCpp11TrieBuilder : public TrieBuilder
 public:
   LockfreeCpp11TrieBuilder(std::vector<Entry>& dict);
   void Build();
+};
+
+class TbbParallelTrieBuilder : public TrieBuilder
+{
+public:
+  TbbParallelTrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
+  void Build();
+private:
+  void Compact();
 };
 
 #endif /* !TRIE_HH */

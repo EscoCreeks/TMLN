@@ -58,3 +58,5 @@ clean:
 
 .PHONY: ref bench test
 .PHONY: build/tests/test.xml
+
+-include ${CDEPS}

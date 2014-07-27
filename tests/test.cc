@@ -28,8 +28,8 @@ protected:
   TrieNode refTrie;
 
 private:
-  const std::string dictPath = "assignment/words.txt";
-  //const std::string dictPath = "tests/dicts/dict10.txt";
+  //const std::string dictPath = "assignment/words.txt";
+  const std::string dictPath = "tests/dicts/dict10.txt";
 };
 
 template<class T1, class T2>

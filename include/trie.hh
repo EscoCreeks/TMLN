@@ -38,9 +38,9 @@ public:
   virtual void Build();
   void ToGraphViz(std::string fileName);
   const TrieNode& GetRoot();
+  virtual void Compact();
 private:
   void Merge();
-  virtual void Compact();
 protected:
   const std::vector<Entry> _dict;
   TrieNode _root;
@@ -51,7 +51,6 @@ class SimpleTrieBuilder : public TrieBuilder
 public:
   SimpleTrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
   void Build();
-private:
   void Compact();
 };
 
@@ -60,7 +59,6 @@ class LockedCpp11TrieBuilder : public TrieBuilder
 public:
   LockedCpp11TrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
   void Build();
-private:
   void Compact();
 };
 
@@ -71,8 +69,8 @@ public:
   void Build();
   void TbbToGraphViz(std::string fileName);
   const TbbTrieNode& GetRoot();
-private:
   void Compact();
+private:
   TbbTrieNode _tbbRoot;
 };
 

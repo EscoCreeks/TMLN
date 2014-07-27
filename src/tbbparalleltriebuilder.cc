@@ -17,19 +17,12 @@ void AddTrie(TbbTrieNode& root, const Entry& entry)
 
 void TbbParallelTrieBuilder::Build()
 {
-  {
-    time_guard tg("tbb construction: ");
-    TbbTrieNode& root = _tbbRoot;
-    tbb::parallel_for(tbb::blocked_range<size_t>(0,_dict.size()),
-        [=,&root](const tbb::blocked_range<size_t>& r){
-          for (size_t i = r.begin(); i != r.end(); ++i)
-            AddTrie(root, _dict[i]);
-        });
-  }
-  {
-    time_guard tg("tbb compaction: ");
-    Compact();
-  }
+  TbbTrieNode& root = _tbbRoot;
+  tbb::parallel_for(tbb::blocked_range<size_t>(0,_dict.size()),
+      [=,&root](const tbb::blocked_range<size_t>& r){
+        for (size_t i = r.begin(); i != r.end(); ++i)
+          AddTrie(root, _dict[i]);
+      });
 }
 
 void ParallelCompactNode(TbbTrieNode& prec, const std::string keyFather, TbbTrieNode& curr, bool& toDelete)

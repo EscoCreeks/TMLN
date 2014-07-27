@@ -101,6 +101,13 @@ TEST_F(Compare, SimpleBuild)
   TestTrie(refTrie, tb.GetRoot());
 }
 
+TEST_F(Compare, TbbBuild)
+{
+  LocklessTrieBuilder tb(dict);
+  tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);

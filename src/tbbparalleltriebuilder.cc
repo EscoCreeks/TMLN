@@ -37,16 +37,10 @@ void ParallelCompactNode(TbbTrieNode& prec, const std::string keyFather, TbbTrie
   if (curr.edges.size() == 1 && !curr.isOutNode)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
-    {
-      trieNodeMap::accessor accessor;
-      if (prec.edges.insert(accessor, newKey)){
-        accessor->second = curr.edges.begin()->second;
-      }
-    }
-
-    toDelete = true;
     trieNodeMap::accessor accessor;
-    if (prec.edges.find(accessor, newKey)){
+    if (prec.edges.insert(accessor, newKey)){
+      accessor->second = curr.edges.begin()->second;
+      toDelete = true;
       bool toDeleteRec = false;
       ParallelCompactNode(prec, newKey, accessor->second, toDeleteRec);
       if (toDeleteRec)

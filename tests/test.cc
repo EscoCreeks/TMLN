@@ -71,7 +71,6 @@ TEST_F(Base, LocklessParralelBuild)
 
 TEST_F(Base, TbbParralelBuild)
 {
-  ASSERT_FALSE("This test hang");
   TbbParallelTrieBuilder tb(dict);
   tb.Build();
   TestTrie(refTrie, tb.GetRoot());

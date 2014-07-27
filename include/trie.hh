@@ -24,6 +24,9 @@ struct TrieNode
 
 struct TbbTrieNode
 {
+  std::vector<std::string> GetKeys();
+  const TbbTrieNode* GetChild(std::string symb);
+
   tbb::concurrent_hash_map<std::string, TbbTrieNode> edges;
   bool isOutNode = false;
 };
@@ -67,6 +70,7 @@ public:
   TbbParallelTrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
   void Build();
   void TbbToGraphViz(std::string fileName);
+  const TbbTrieNode& GetRoot();
 private:
   void Compact();
   TbbTrieNode _tbbRoot;

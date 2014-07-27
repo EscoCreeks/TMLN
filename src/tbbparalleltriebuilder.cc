@@ -48,15 +48,14 @@ void ParallelCompactNode(TbbTrieNode& prec, const std::string keyFather, TbbTrie
     }
   }
   else {
-    std::vector<std::thread> threads;
     std::vector<std::string> keys;
     for (auto item : curr.edges)
       keys.push_back(item.first);
-    bool toDeleteRec = false;
     tbb::parallel_for(tbb::blocked_range<size_t>(0,keys.size()),
-        [=,&curr, &toDeleteRec](const tbb::blocked_range<size_t>& r){
+        [=,&curr](const tbb::blocked_range<size_t>& r){
         for (size_t i = r.begin(); i != r.end(); ++i)
         {
+          bool toDeleteRec = false;
           trieNodeMap::accessor accessor;
           if(curr.edges.find(accessor, keys[i])){
             ParallelCompactNode(curr, keys[i], accessor->second, toDeleteRec);

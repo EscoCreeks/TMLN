@@ -81,3 +81,25 @@ const TrieNode* TrieNode::GetChild(std::string symb)
   else
     return &it->second;
 }
+
+const TbbTrieNode& TbbParallelTrieBuilder::GetRoot()
+{
+  return _tbbRoot;
+}
+
+std::vector<std::string> TbbTrieNode::GetKeys()
+{
+  std::vector<std::string> rtn;
+  for (auto edge : edges)
+    rtn.push_back(edge.first);
+  return rtn;
+}
+
+const TbbTrieNode* TbbTrieNode::GetChild(std::string symb)
+{
+  decltype(edges)::accessor accessor;
+  if (edges.find(accessor, symb))
+    return &accessor->second;
+  else
+    return nullptr;
+}

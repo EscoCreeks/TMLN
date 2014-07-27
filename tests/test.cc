@@ -19,9 +19,6 @@ protected:
     dictStream.close();
     EXPECT_FALSE(dict.empty());
     RecordProperty("EntryCount", dict.size());
-    // SimpleTrieBuilder tb(dict);
-    // tb.Build();
-    // refTrie = tb.GetRoot();
   }
 
   std::vector<Entry> dict;
@@ -72,6 +69,38 @@ TEST_F(Base, LocklessParralelBuild)
 TEST_F(Base, TbbParralelBuild)
 {
   TbbParallelTrieBuilder tb(dict);
+  tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
+class Compare : public testing::Test
+{
+protected:
+  virtual void SetUp()
+  {
+    std::ifstream dictStream(dictPath);
+    ASSERT_TRUE(dictStream.is_open());
+    dict = ParseDict(dictStream);
+    dictStream.close();
+    EXPECT_FALSE(dict.empty());
+    RecordProperty("EntryCount", dict.size());
+
+    SimpleTrieBuilder tb(dict);
+    tb.Build();
+    refTrie = tb.GetRoot();
+  }
+
+  std::vector<Entry> dict;
+  SimpleTrieNode refTrie;
+
+private:
+  //const std::string dictPath = "assignment/words.txt";
+  const std::string dictPath = "tests/dicts/dict10.txt";
+};
+
+TEST_F(Compare, SimpleBuild)
+{
+  SimpleTrieBuilder tb(dict);
   tb.Build();
   TestTrie(refTrie, tb.GetRoot());
 }

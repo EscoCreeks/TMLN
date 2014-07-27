@@ -5,7 +5,7 @@
 
 struct LocklessTrieNode
 {
-  tbb::concurrent_hash_map<std::string, LocklessTrieNode> edges;
+  tbb::concurrent_hash_map<std::string, LocklessTrieNode*> edges;
   bool isOutNode = false;
 };
 

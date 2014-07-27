@@ -26,7 +26,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict10.txt";
+  const std::string dictPath = "tests/dicts/dict1000000.txt";
 };
 
 template<class T1, class T2>
@@ -51,15 +51,15 @@ TEST_F(Base, SimpleBuild)
   tb.Build();
 }
 
-TEST_F(Base, LockedParralelBuild)
-{
-  LockedCpp11TrieBuilder tb(dict);
-  tb.Build();
-}
-
 TEST_F(Base, LocklessParralelBuild)
 {
   LocklessTrieBuilder tb(dict);
+  tb.Build();
+}
+
+TEST_F(Base, LockedParralelBuild)
+{
+  LockedCpp11TrieBuilder tb(dict);
   tb.Build();
 }
 

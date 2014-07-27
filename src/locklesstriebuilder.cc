@@ -1,4 +1,6 @@
 #include <trie.hh>
+#include <tbb/parallel_for.h>
+
 
 LocklessTrieBuilder::LocklessTrieBuilder(const std::vector<Entry>& dict)
   : TrieBuilder(dict)
@@ -23,8 +25,12 @@ void AddTrie(LocklessTrieNode& root, const Entry& entry)
 
 void LocklessTrieBuilder::Build()
 {
-  for (const Entry& entry : _dict)
-    AddTrie(_root, entry);
+  auto& root = _root;
+  tbb::parallel_for(tbb::blocked_range<size_t>(0,_dict.size()),
+      [=,&root](const tbb::blocked_range<size_t>& r){
+        for (size_t i = r.begin(); i != r.end(); ++i)
+          AddTrie(root, _dict[i]);
+      });
 }
 
 

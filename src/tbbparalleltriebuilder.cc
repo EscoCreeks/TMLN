@@ -32,45 +32,25 @@ void TbbParallelTrieBuilder::Build()
   }
 }
 
-void ParallelCompactNode(TbbTrieNode& prec, const std::string keyFather, TbbTrieNode& curr)
+void ParallelCompactNode(TbbTrieNode& prec, const std::string keyFather, TbbTrieNode& curr, bool& toDelete)
 {
-  static std::mutex mutex;
-  mutex.lock();
-  std::cout << "entering with : " << keyFather << std::endl;
-  mutex.unlock();
   if (curr.edges.size() == 1 && !curr.isOutNode)
   {
     std::string newKey = keyFather + curr.edges.begin()->first;
-    mutex.lock();
-    std::cout << "newKey : " << newKey << std::endl;
-    mutex.unlock();
-
     {
       trieNodeMap::accessor accessor;
       if (prec.edges.insert(accessor, newKey)){
-        mutex.lock();
-        std::cout << "inserted : " << accessor->first << std::endl;
-        mutex.unlock();
         accessor->second = curr.edges.begin()->second;
       }
     }
-    mutex.lock();
-    std::cout << "END INSERT" << std::endl;
-    mutex.unlock();
-    // DAFUK IL BLOQUE ICI
-    if (prec.edges.erase(keyFather)){
-      mutex.lock();
-      std::cout << "deleted : " << keyFather << std::endl;
-      mutex.unlock();
-    }
-    // La ça marche
-    std::cout << "END DELETE" << std::endl;
+
+    toDelete = true;
     trieNodeMap::accessor accessor;
     if (prec.edges.find(accessor, newKey)){
-      mutex.lock();
-      std::cout << "go to : " << accessor->first << std::endl;
-      mutex.unlock();
-      ParallelCompactNode(prec, newKey, accessor->second);
+      bool toDeleteRec = false;
+      ParallelCompactNode(prec, newKey, accessor->second, toDeleteRec);
+      if (toDeleteRec)
+        prec.edges.erase(accessor);
     }
   }
   else {
@@ -78,14 +58,16 @@ void ParallelCompactNode(TbbTrieNode& prec, const std::string keyFather, TbbTrie
     std::vector<std::string> keys;
     for (auto item : curr.edges)
       keys.push_back(item.first);
-
+    bool toDeleteRec = false;
     tbb::parallel_for(tbb::blocked_range<size_t>(0,keys.size()),
-        [=,&curr](const tbb::blocked_range<size_t>& r){
+        [=,&curr, &toDeleteRec](const tbb::blocked_range<size_t>& r){
         for (size_t i = r.begin(); i != r.end(); ++i)
         {
           trieNodeMap::accessor accessor;
           if(curr.edges.find(accessor, keys[i])){
-            ParallelCompactNode(curr, keys[i], accessor->second);
+            ParallelCompactNode(curr, keys[i], accessor->second, toDeleteRec);
+            if (toDeleteRec)
+              curr.edges.erase(accessor);
           }
         }
         });
@@ -105,7 +87,10 @@ void TbbParallelTrieBuilder::Compact()
       {
         trieNodeMap::accessor accessor;
         if(root.edges.find(accessor, keys[i])){
-          ParallelCompactNode(root, keys[i], accessor->second);
+          bool toDelete = false;
+          ParallelCompactNode(root, keys[i], accessor->second, toDelete);
+          if (toDelete)
+            root.edges.erase(accessor);
         }
       }
       });

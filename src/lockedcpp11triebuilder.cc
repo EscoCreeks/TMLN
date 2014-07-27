@@ -28,10 +28,10 @@ void LockedCpp11TrieBuilder::Build()
     for (auto& th: threads)
       th.join();
   }
-  {
-    time_guard tg("locked compaction: ");
-    Compact();
-  }
+  // {
+  //   time_guard tg("locked compaction: ");
+  //   Compact();
+  // }
 }
 
 void ParallelCompactNode(TrieNode& prec, const std::string keyFather, TrieNode& curr)

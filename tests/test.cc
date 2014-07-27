@@ -59,12 +59,14 @@ TEST_F(Base, LockedParralelBuild)
 {
   LockedCpp11TrieBuilder tb(dict);
   tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, LocklessParralelBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
+  //TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, TbbParralelBuild)
@@ -72,6 +74,7 @@ TEST_F(Base, TbbParralelBuild)
   ASSERT_FALSE("This test hang");
   TbbParallelTrieBuilder tb(dict);
   tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
 }
 
 int main(int argc, char **argv)

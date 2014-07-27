@@ -19,17 +19,17 @@ protected:
     dictStream.close();
     EXPECT_FALSE(dict.empty());
     RecordProperty("EntryCount", dict.size());
-
-    SimpleTrieBuilder tb(dict);
-    tb.Build();
-    refTrie = tb.GetRoot();
+    // SimpleTrieBuilder tb(dict);
+    // tb.Build();
+    // refTrie = tb.GetRoot();
   }
 
   std::vector<Entry> dict;
   TrieNode refTrie;
 
 private:
-  const std::string dictPath = "tests/dicts/dict05.txt";
+  const std::string dictPath = "assignment/words.txt";
+  //const std::string dictPath = "tests/dicts/dict10.txt";
 };
 
 template<class T1, class T2>
@@ -52,7 +52,7 @@ TEST_F(Base, SimpleBuild)
 {
   SimpleTrieBuilder tb(dict);
   tb.Build();
-  TestTrie(refTrie, tb.GetRoot());
+  //TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, LockedParralelBuild)

@@ -1,18 +1,21 @@
 #include <trie.hh>
 
-void AddTrie(TrieNode& root, const Entry& entry)
+void AddTrie(SimpleTrieNode& root, const Entry& entry)
 {
   std::string word = entry.str;
-  TrieNode* node = &root;
+  SimpleTrieNode* node = &root;
   for (int i = 0; i < word.size(); ++i){
-    node = &node->edges[std::string(1,word[i])];
+    SimpleTrieNode*& nnode = node->edges[std::string(1,word[i])];
+    if (nnode == nullptr)
+      nnode = new SimpleTrieNode();
+    node = nnode;
   }
   node->isOutNode = true;
 }
 
 void SimpleTrieBuilder::Build()
 {
-  TrieNode& root = _root;
+  SimpleTrieNode& root = _root;
   for (const Entry& entry : _dict)
   {
     AddTrie(root, entry);
@@ -39,15 +42,22 @@ void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
   }
 }
 
+SimpleTrieNode::~SimpleTrieNode()
+{
+  for (std::pair<std::string, SimpleTrieNode*> edge : edges)
+    delete edge.second;
+}
+
 void SimpleTrieBuilder::Compact()
 {
-  std::map<std::string, TrieNode>::iterator it;
-  std::vector<std::string> keys;
-  for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
-    keys.push_back(it->first);
+  NOT_IMPLEMENTED();
+  // std::map<std::string, TrieNode>::iterator it;
+  // std::vector<std::string> keys;
+  // for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
+  //   keys.push_back(it->first);
 
-  for (int i = 0; i < keys.size(); ++i)
-  {
-    CompactNode(_root, keys[i], _root.edges[keys[i]]);
-  }
+  // for (int i = 0; i < keys.size(); ++i)
+  // {
+  //   CompactNode(_root, keys[i], _root.edges[keys[i]]);
+  // }
 }

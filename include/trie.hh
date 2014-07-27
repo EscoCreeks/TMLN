@@ -46,14 +46,6 @@ protected:
   TrieNode _root;
 };
 
-class SimpleTrieBuilder : public TrieBuilder
-{
-public:
-  SimpleTrieBuilder(const std::vector<Entry>& dict) : TrieBuilder(dict) {};
-  void Build();
-  void Compact();
-};
-
 class LockedCpp11TrieBuilder : public TrieBuilder
 {
 public:
@@ -74,6 +66,7 @@ private:
   TbbTrieNode _tbbRoot;
 };
 
+#include <simpleTrie.hh>
 #include <locklessTrie.hh>
 
 #endif /* !TRIE_HH */

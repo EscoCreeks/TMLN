@@ -22,6 +22,30 @@ void SimpleTrieBuilder::Build()
   }
 }
 
+
+SimpleTrieNode::~SimpleTrieNode()
+{
+  for (std::pair<std::string, SimpleTrieNode*> edge : edges)
+    if (edge.second) delete edge.second;
+}
+
+const std::vector<std::string> SimpleTrieNode::GetKeys()
+{
+  std::vector<std::string> keys;
+  for (auto edge : edges)
+    keys.push_back(edge.first);
+  return keys;
+}
+
+const SimpleTrieNode* SimpleTrieNode::GetChild(const std::string& key)
+{
+  decltype(edges)::iterator it = edges.find(key);
+  if (it == edges.end())
+    return nullptr;
+  else
+    return it->second;
+}
+
 void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
 {
   if (curr.edges.size() == 1 && !curr.isOutNode)
@@ -40,12 +64,6 @@ void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
     for (int i = 0; i < keys.size(); ++i)
       CompactNode(curr, keys[i], curr.edges[keys[i]]);
   }
-}
-
-SimpleTrieNode::~SimpleTrieNode()
-{
-  for (std::pair<std::string, SimpleTrieNode*> edge : edges)
-    delete edge.second;
 }
 
 void SimpleTrieBuilder::Compact()

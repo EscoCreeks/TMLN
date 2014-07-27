@@ -4,6 +4,8 @@
 struct SimpleTrieNode
 {
   ~SimpleTrieNode();
+  const std::vector<std::string> GetKeys();
+  const SimpleTrieNode* GetChild(const std::string& key);
 
   std::map<std::string, SimpleTrieNode*> edges;
   bool isOutNode = false;
@@ -15,6 +17,7 @@ public:
   SimpleTrieBuilder(const std::vector<Entry>& dict) : _dict(dict) {};
   void Build();
   void Compact();
+  const SimpleTrieNode& GetRoot() { return _root; };
 private:
   std::vector<Entry> _dict;
   SimpleTrieNode _root;

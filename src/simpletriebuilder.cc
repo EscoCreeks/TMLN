@@ -22,13 +22,37 @@ void SimpleTrieBuilder::Build()
   }
 }
 
+SimpleTrieNode::SimpleTrieNode()
+  : edges()
+{
+}
+
+SimpleTrieNode::SimpleTrieNode(const SimpleTrieNode& base)
+{
+  std::map<std::string, SimpleTrieNode*> nedges;
+  for (auto edge : base.edges)
+    nedges[edge.first] = new SimpleTrieNode(*edge.second);
+  edges = nedges;
+  isOutNode = base.isOutNode;
+}
+
+SimpleTrieNode& SimpleTrieNode::operator=(const SimpleTrieNode& base)
+{
+  std::map<std::string, SimpleTrieNode*> nedges;
+  for (auto edge : base.edges)
+    nedges[edge.first] = new SimpleTrieNode(*edge.second);
+  edges = nedges;
+  isOutNode = base.isOutNode;
+  return *this;
+}
+
 SimpleTrieNode::~SimpleTrieNode()
 {
   for (std::pair<std::string, SimpleTrieNode*> edge : edges)
     if (edge.second) delete edge.second;
 }
 
-const std::vector<std::string> SimpleTrieNode::GetKeys()
+const std::vector<std::string> SimpleTrieNode::GetKeys() const
 {
   std::vector<std::string> keys;
   for (auto edge : edges)
@@ -36,9 +60,9 @@ const std::vector<std::string> SimpleTrieNode::GetKeys()
   return keys;
 }
 
-const SimpleTrieNode* SimpleTrieNode::GetChild(const std::string& key)
+const SimpleTrieNode* SimpleTrieNode::GetChild(const std::string& key) const
 {
-  decltype(edges)::iterator it = edges.find(key);
+  decltype(edges)::const_iterator it = edges.find(key);
   if (it == edges.end())
     return nullptr;
   else

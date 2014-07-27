@@ -30,7 +30,7 @@ private:
 };
 
 template<class T1, class T2>
-void TestTrie(T1 trieNodeRef, T2 trieNodeTest)
+void TestTrie(const T1& trieNodeRef, const T2& trieNodeTest)
 {
   ASSERT_EQ(trieNodeRef.isOutNode, trieNodeTest.isOutNode);
   auto refKeys = trieNodeRef.GetKeys();
@@ -49,28 +49,24 @@ TEST_F(Base, SimpleBuild)
 {
   SimpleTrieBuilder tb(dict);
   tb.Build();
-  //TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, LockedParralelBuild)
 {
   LockedCpp11TrieBuilder tb(dict);
   tb.Build();
-  TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, LocklessParralelBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
-  //TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, TbbParralelBuild)
 {
   TbbParallelTrieBuilder tb(dict);
   tb.Build();
-  TestTrie(refTrie, tb.GetRoot());
 }
 
 class Compare : public testing::Test
@@ -85,9 +81,9 @@ protected:
     EXPECT_FALSE(dict.empty());
     RecordProperty("EntryCount", dict.size());
 
-    SimpleTrieBuilder tb(dict);
-    tb.Build();
-    refTrie = tb.GetRoot();
+    SimpleTrieBuilder rtb(dict);
+    rtb.Build();
+    refTrie = rtb.GetRoot();
   }
 
   std::vector<Entry> dict;
@@ -95,7 +91,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict10.txt";
+  const std::string dictPath = "tests/dicts/dict15.txt";
 };
 
 TEST_F(Compare, SimpleBuild)

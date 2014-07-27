@@ -3,9 +3,13 @@
 
 struct SimpleTrieNode
 {
+  SimpleTrieNode();
   ~SimpleTrieNode();
-  const std::vector<std::string> GetKeys();
-  const SimpleTrieNode* GetChild(const std::string& key);
+  SimpleTrieNode(const SimpleTrieNode& base);
+  SimpleTrieNode& operator=(const SimpleTrieNode& base);
+
+  const std::vector<std::string> GetKeys() const;
+  const SimpleTrieNode* GetChild(const std::string& key) const;
 
   std::map<std::string, SimpleTrieNode*> edges;
   bool isOutNode = false;

@@ -22,23 +22,33 @@ void SimpleTrieBuilder::Build()
   }
 }
 
-void CompactNode(TrieNode& prec, std::string keyFather, TrieNode& curr)
+void CompactNode(SimpleTrieNode& prec, std::string keyFather, SimpleTrieNode* curr)
 {
-  if (curr.edges.size() == 1 && !curr.isOutNode)
-  {
-    std::string newKey = keyFather + curr.edges.begin()->first;
-    prec.edges[newKey] = curr.edges.begin()->second;
-    prec.edges.erase(keyFather);
+  std::cout << "entering with : " << keyFather << std::endl;
+  if (curr->edges.size() == 1 && !curr->isOutNode){
+    SimpleTrieNode* nnode = curr;
+    SimpleTrieNode* precnode = &prec;
+    std::string newKey = keyFather;
+    std::string precKey = keyFather;
+    do
+    {
+      std::cout << "newkey " << newKey << std::endl;
+      precKey = precnode->edges.begin()->first;
+      newKey += nnode->edges.begin()->first;
+      nnode = nnode->edges.begin()->second;
+      precnode->edges.erase(precKey);
+      precnode = nnode;
+    } while (nnode->edges.size() == 1 && !nnode->isOutNode);
+    prec.edges[newKey] = nnode;
     CompactNode(prec, newKey, prec.edges[newKey]);
   }
   else {
-    std::map<std::string, TrieNode>::iterator it;
     std::vector<std::string> keys;
-    for (it = curr.edges.begin(); it != curr.edges.end(); ++it)
-      keys.push_back(it->first);
+    for (auto& item : curr->edges)
+      keys.push_back(item.first);
 
     for (int i = 0; i < keys.size(); ++i)
-      CompactNode(curr, keys[i], curr.edges[keys[i]]);
+      CompactNode(*curr, keys[i], curr->edges[keys[i]]);
   }
 }
 
@@ -50,14 +60,12 @@ SimpleTrieNode::~SimpleTrieNode()
 
 void SimpleTrieBuilder::Compact()
 {
-  NOT_IMPLEMENTED();
-  // std::map<std::string, TrieNode>::iterator it;
-  // std::vector<std::string> keys;
-  // for (it = _root.edges.begin(); it != _root.edges.end(); ++it)
-  //   keys.push_back(it->first);
+  std::vector<std::string> keys;
+  for (auto& item : _root.edges)
+    keys.push_back(item.first);
 
-  // for (int i = 0; i < keys.size(); ++i)
-  // {
-  //   CompactNode(_root, keys[i], _root.edges[keys[i]]);
-  // }
+  for (int i = 0; i < keys.size(); ++i)
+  {
+    CompactNode(_root, keys[i], _root.edges[keys[i]]);
+  }
 }

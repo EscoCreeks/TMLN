@@ -32,13 +32,15 @@ void CompactNode(SimpleTrieNode& prec, std::string keyFather, SimpleTrieNode* cu
     std::string precKey = keyFather;
     do
     {
-      std::cout << "newkey " << newKey << std::endl;
-      precKey = precnode->edges.begin()->first;
-      newKey += nnode->edges.begin()->first;
-      nnode = nnode->edges.begin()->second;
       precnode->edges.erase(precKey);
+      precKey = precnode->edges.begin()->first;
+      std::cout << "precKey " << precKey << std::endl;
+      newKey += nnode->edges.begin()->first;
+      std::cout << "newkey " << newKey << std::endl;
       precnode = nnode;
+      nnode = nnode->edges.begin()->second;
     } while (nnode->edges.size() == 1 && !nnode->isOutNode);
+    std::cout << "final : " << newKey << " with last one : " << precKey << std::endl;
     prec.edges[newKey] = nnode;
     CompactNode(prec, newKey, prec.edges[newKey]);
   }

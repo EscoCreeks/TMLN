@@ -15,22 +15,44 @@ protected:
   {
     std::ifstream dictStream(dictPath);
     ASSERT_TRUE(dictStream.is_open());
-    std::vector<Entry> dict(ParseDict(dictStream));
+    dict = ParseDict(dictStream);
     dictStream.close();
     EXPECT_FALSE(dict.empty());
     RecordProperty("EntryCount", dict.size());
+
+    SimpleTrieBuilder tb(dict);
+    tb.Build();
+    refTrie = tb.GetRoot();
   }
 
   std::vector<Entry> dict;
+  TrieNode refTrie;
 
 private:
   const std::string dictPath = "tests/dicts/dict05.txt";
 };
 
+template<class T1, class T2>
+void TestTrie(T1 trieNodeRef, T2 trieNodeTest)
+{
+  ASSERT_EQ(trieNodeRef.isOutNode, trieNodeTest.isOutNode);
+  auto refKeys = trieNodeRef.GetKeys();
+  for (std::string symb : refKeys)
+  {
+    const T1* newTrieNodeRef = trieNodeRef.GetChild(symb);
+    ASSERT_TRUE(newTrieNodeRef != nullptr); // this should never happen but just in case
+
+    const T2* newTrieNodeTest = trieNodeTest.GetChild(symb);
+    ASSERT_TRUE(newTrieNodeTest != nullptr);
+    TestTrie(*newTrieNodeRef, *newTrieNodeTest);
+  }
+}
+
 TEST_F(Base, SimpleBuild)
 {
   SimpleTrieBuilder tb(dict);
   tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(Base, LockedParralelBuild)
@@ -39,9 +61,9 @@ TEST_F(Base, LockedParralelBuild)
   tb.Build();
 }
 
-TEST_F(Base, LockFreeCpp11ParralelBuild)
+TEST_F(Base, LocklessParralelBuild)
 {
-  LockfreeCpp11TrieBuilder tb(dict);
+  LocklessTrieBuilder tb(dict);
   tb.Build();
 }
 

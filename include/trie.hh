@@ -15,6 +15,9 @@ public:
 
 struct TrieNode
 {
+  std::vector<std::string> GetKeys();
+  const TrieNode* GetChild(std::string symb);
+
   std::map<std::string, TrieNode> edges;
   bool isOutNode = false;
 };
@@ -31,11 +34,12 @@ public:
   TrieBuilder(const std::vector<Entry>& dict);
   virtual void Build();
   void ToGraphViz(std::string fileName);
+  const TrieNode& GetRoot();
 private:
   void Merge();
   virtual void Compact();
 protected:
-  std::vector<Entry> _dict;
+  const std::vector<Entry> _dict;
   TrieNode _root;
 };
 
@@ -57,13 +61,6 @@ private:
   void Compact();
 };
 
-class LockfreeCpp11TrieBuilder : public TrieBuilder
-{
-public:
-  LockfreeCpp11TrieBuilder(std::vector<Entry>& dict);
-  void Build();
-};
-
 class TbbParallelTrieBuilder : public TrieBuilder
 {
 public:
@@ -74,5 +71,7 @@ private:
   void Compact();
   TbbTrieNode _tbbRoot;
 };
+
+#include <locklessTrie.hh>
 
 #endif /* !TRIE_HH */

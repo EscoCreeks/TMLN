@@ -59,3 +59,25 @@ void TrieBuilder::ToGraphViz(std::string fileName)
   else
     std::cerr << "Impossible d'ouvrir le fichier !" << std::endl;
 }
+
+const TrieNode& TrieBuilder::GetRoot()
+{
+  return _root;
+}
+
+std::vector<std::string> TrieNode::GetKeys()
+{
+  std::vector<std::string> rtn;
+  for (auto edge : edges)
+    rtn.push_back(edge.first);
+  return rtn;
+}
+
+const TrieNode* TrieNode::GetChild(std::string symb)
+{
+  decltype(edges)::iterator it = edges.find(symb);
+  if (it == edges.end())
+    return nullptr;
+  else
+    return &it->second;
+}

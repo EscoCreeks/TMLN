@@ -11,7 +11,7 @@ void AddTrie(LocklessTrieNode& root, const Entry& entry)
   for (const char symb : entry.str)
   {
     decltype(node->edges)::accessor acc;
-    node->edges.insert(acc, std::string(symb, 1));
+    node->edges.insert(acc, std::string(1, symb));
     if (acc->second == nullptr)
       node = (acc->second = new LocklessTrieNode());
     else
@@ -70,7 +70,10 @@ const std::vector<std::string> LocklessTrieNode::GetKeys() const
 {
   std::vector<std::string> keys;
   for (auto edge : edges)
+  {
+    std::cerr << edge.first;
     keys.push_back(edge.first);
+  }
   return keys;
 }
 

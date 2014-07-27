@@ -71,7 +71,6 @@ const SimpleTrieNode* SimpleTrieNode::GetChild(const std::string& key) const
 
 void CompactNode(SimpleTrieNode& prec, std::string keyFather, SimpleTrieNode* curr)
 {
-  std::cout << "entering with : " << keyFather << std::endl;
   if (curr->edges.size() == 1 && !curr->isOutNode){
     SimpleTrieNode* nnode = curr;
     SimpleTrieNode* precnode = &prec;
@@ -79,12 +78,11 @@ void CompactNode(SimpleTrieNode& prec, std::string keyFather, SimpleTrieNode* cu
     std::string precKey = keyFather;
     do
     {
+      precnode->edges[precKey] = nullptr;
       precnode->edges.erase(precKey);
-      precKey = precnode->edges.begin()->first;
-      std::cout << "precKey " << precKey << std::endl;
       precnode = nnode;
+      precKey = precnode->edges.begin()->first;
       newKey += nnode->edges.begin()->first;
-      std::cout << "newkey " << newKey << std::endl;
       nnode = nnode->edges.begin()->second;
     } while (nnode->edges.size() == 1 && !nnode->isOutNode);
     prec.edges[newKey] = nnode;

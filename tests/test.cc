@@ -147,7 +147,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict10.txt";
+  const std::string dictPath = "tests/dicts/dict100000.txt";
 };
 
 TEST_F(CompareCompact, SimpleCompact)
@@ -155,7 +155,6 @@ TEST_F(CompareCompact, SimpleCompact)
   SimpleTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
-  TestTrie(refTrie, tb.GetRoot());
 }
 
 TEST_F(CompareCompact, LockLessCompact)
@@ -163,7 +162,13 @@ TEST_F(CompareCompact, LockLessCompact)
   LocklessTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
-  TestTrie(refTrie, tb.GetRoot());
+}
+
+TEST_F(CompareCompact, LockedCompact)
+{
+  LockedTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
 }
 
 TEST_F(CompareCompact, TbbCompact)
@@ -171,7 +176,6 @@ TEST_F(CompareCompact, TbbCompact)
   LocklessTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
-  TestTrie(refTrie, tb.GetRoot());
 }
 
 int main(int argc, char **argv)

@@ -53,19 +53,19 @@ TEST_F(Base, SimpleBuild)
   tb.Build();
 }
 
-TEST_F(Base, LockedParralelBuild)
+TEST_F(Base, LockedBuild)
 {
   LockedTrieBuilder tb(dict);
   tb.Build();
 }
 
-TEST_F(Base, LocklessParralelBuild)
+TEST_F(Base, TbbPBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
 }
 
-TEST_F(Base, TbbParralelBuild)
+TEST_F(Base, TbbBuild)
 {
   TbbParallelTrieBuilder tb(dict);
   tb.Build();
@@ -103,7 +103,7 @@ TEST_F(Compare, SimpleBuild)
   TestTrie(refTrie, tb.GetRoot());
 }
 
-TEST_F(Compare, LockLessBuild)
+TEST_F(Compare, TbbPBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
@@ -147,7 +147,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict100000.txt";
+  const std::string dictPath = "tests/dicts/10000.md5.txt";
 };
 
 TEST_F(CompareCompact, SimpleCompact)
@@ -157,16 +157,18 @@ TEST_F(CompareCompact, SimpleCompact)
   tb.Compact();
 }
 
-TEST_F(CompareCompact, LockLessCompact)
-{
-  LocklessTrieBuilder tb(dict);
-  tb.Build();
-  tb.Compact();
-}
+
 
 TEST_F(CompareCompact, LockedCompact)
 {
   LockedTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
+}
+
+TEST_F(CompareCompact, TbbPCompact)
+{
+  LocklessTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
 }

@@ -26,7 +26,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict1000000.txt";
+  const std::string dictPath = "tests/dicts/dict10000.txt";
 };
 
 template<class T1, class T2>
@@ -91,7 +91,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict15.txt";
+  const std::string dictPath = "tests/dicts/dict10000.txt";
 };
 
 TEST_F(Compare, SimpleBuild)

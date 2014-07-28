@@ -25,11 +25,10 @@ void AddTrie(LocklessTrieNode& root, const Entry& entry)
 
 void LocklessTrieBuilder::Build()
 {
-  auto& root = _root;
   tbb::parallel_for(tbb::blocked_range<size_t>(0,_dict.size()),
-      [=,&root](const tbb::blocked_range<size_t>& r){
+      [&](const tbb::blocked_range<size_t>& r){
         for (size_t i = r.begin(); i != r.end(); ++i)
-          AddTrie(root, _dict[i]);
+          AddTrie(_root, _dict[i]);
       });
 }
 

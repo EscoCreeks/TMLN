@@ -6,7 +6,7 @@ void AddTrie(LockedTrieNode& root, const Entry& entry)
   std::string word = entry.str;
   LockedTrieNode* node = &root;
   for (int i = 0; i < word.size(); ++i){
-    LockedTrieNode* nnode = node->edges[std::string(1,word[i])];
+    LockedTrieNode*& nnode = node->edges[std::string(1,word[i])];
     if (nnode == nullptr)
       nnode = new LockedTrieNode();
 
@@ -15,6 +15,7 @@ void AddTrie(LockedTrieNode& root, const Entry& entry)
     node = nnode;
   }
   node->isOutNode = true;
+  node->mutex.unlock();
 }
 
 void StartAddTrie(LockedTrieNode& root, const Entry& entry)

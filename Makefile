@@ -5,9 +5,9 @@ Out = build
 CBIN = TextMiningCompiler
 ABIN = TextMiningApp
 
-CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedcpp11triebuilder.cc src/tbbparalleltriebuilder.cc
+CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedtrie.cc src/tbbparalleltriebuilder.cc src/lockedcpp11triebuilder.cc
 
-CXXFLAGS = -I include -std=c++11 -O3
+CXXFLAGS = -I include -std=c++11 -g
 LDFLAGS = -ltbb
 
 COBJS = ${CSRC:.cc=.o}
@@ -34,7 +34,7 @@ bench: ref build/tests/output
 test: build/tests/test.xml
 
 build/tests/test.xml:  build/test ${CBIN}
-	$< --gtest_output=xml:$@ || true
+	$< --gtest_output=xml:$@  || true
 
 ${Out}:
 	mkdir $@

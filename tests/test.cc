@@ -63,7 +63,7 @@ TEST_F(Base, LocklessParralelBuild)
 
 TEST_F(Base, LockedParralelBuild)
 {
-  LockedCpp11TrieBuilder tb(dict);
+  LockedTrieBuilder tb(dict);
   tb.Build();
 }
 
@@ -108,6 +108,13 @@ TEST_F(Compare, SimpleBuild)
 TEST_F(Compare, LockLessBuild)
 {
   LocklessTrieBuilder tb(dict);
+  tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
+TEST_F(Compare, LockedBuild)
+{
+  LockedTrieBuilder tb(dict);
   tb.Build();
   TestTrie(refTrie, tb.GetRoot());
 }

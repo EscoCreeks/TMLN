@@ -22,6 +22,7 @@ class LocklessTrieBuilder : TrieBuilder
 public:
   LocklessTrieBuilder(const std::vector<Entry>& dict);
   void Build();
+  void Compact();
   LocklessTrieNode& GetRoot() { return _root; }
 private:
   LocklessTrieNode _root;

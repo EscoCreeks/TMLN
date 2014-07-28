@@ -26,7 +26,7 @@ protected:
 
 private:
   //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/dict10000.txt";
+  const std::string dictPath = "tests/dicts/dict100000.txt";
 };
 
 template<class T1, class T2>
@@ -34,6 +34,8 @@ void TestTrie(const T1& trieNodeRef, const T2& trieNodeTest)
 {
   ASSERT_EQ(trieNodeRef.isOutNode, trieNodeTest.isOutNode);
   auto refKeys = trieNodeRef.GetKeys();
+  auto testKeys = trieNodeTest.GetKeys();
+  ASSERT_EQ(refKeys.size(), testKeys.size());
   for (std::string symb : refKeys)
   {
     const T1* newTrieNodeRef = trieNodeRef.GetChild(symb);
@@ -49,12 +51,14 @@ TEST_F(Base, SimpleBuild)
 {
   SimpleTrieBuilder tb(dict);
   tb.Build();
+  tb.Compact();
 }
 
 TEST_F(Base, LocklessParralelBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
+  tb.Compact();
 }
 
 TEST_F(Base, LockedParralelBuild)
@@ -101,10 +105,67 @@ TEST_F(Compare, SimpleBuild)
   TestTrie(refTrie, tb.GetRoot());
 }
 
+TEST_F(Compare, LockLessBuild)
+{
+  LocklessTrieBuilder tb(dict);
+  tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
 TEST_F(Compare, TbbBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
+class CompareCompact : public testing::Test
+{
+protected:
+  virtual void SetUp()
+  {
+    std::ifstream dictStream(dictPath);
+    ASSERT_TRUE(dictStream.is_open());
+    dict = ParseDict(dictStream);
+    dictStream.close();
+    EXPECT_FALSE(dict.empty());
+    RecordProperty("EntryCount", dict.size());
+
+    SimpleTrieBuilder rtb(dict);
+    rtb.Build();
+    rtb.Compact();
+    refTrie = rtb.GetRoot();
+  }
+
+  std::vector<Entry> dict;
+  SimpleTrieNode refTrie;
+
+private:
+  //const std::string dictPath = "assignment/words.txt";
+  const std::string dictPath = "tests/dicts/dict1000000.txt";
+};
+
+TEST_F(CompareCompact, SimpleCompact)
+{
+  SimpleTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
+TEST_F(CompareCompact, LockLessCompact)
+{
+  LocklessTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
+  TestTrie(refTrie, tb.GetRoot());
+}
+
+TEST_F(CompareCompact, TbbCompact)
+{
+  LocklessTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
   TestTrie(refTrie, tb.GetRoot());
 }
 

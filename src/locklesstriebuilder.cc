@@ -92,7 +92,6 @@ const LocklessTrieNode* LocklessTrieNode::GetChild(const std::string& key) const
 
 void ParallelCompactNode(LocklessTrieNode& prec, const std::string keyFather, LocklessTrieNode* curr, bool& toDelete)
 {
-  static std::mutex mutex;
   if (curr->edges.size() == 1 && !curr->isOutNode)
   {
     LocklessTrieNode* nnode = curr;
@@ -101,25 +100,13 @@ void ParallelCompactNode(LocklessTrieNode& prec, const std::string keyFather, Lo
     std::string precKey = keyFather;
     do
     {
-      mutex.lock();
-      std::cout << "newKey " << newKey << std::endl;
-      mutex.unlock();
-      decltype(prec.edges)::accessor accessor;
-      // Ce test permet de savoir si on arrive d'un appel récursif (toDelete est à faux, et il faut le mettre à true pour indiquer
-      // à l'appelant qu'il faudra qu'il delete le noeud avec son argument keyFather en key.
       if (!toDelete)
         toDelete = true;
-      // Ici on est passé une fois par la boucle vu que toDelete est à true.
       else {
-        mutex.lock();
-        std::cout << "trying to access " << precKey << std::endl;
-        mutex.unlock();
-        // Ici on hang. Je ne sais pas pourquoi. Le code de la boucle n'active pas d'accessor, y a pas de lock sur la hash_map.
-        // C'est l'opération find qui hang
-        if (precnode->edges.find(accessor,precKey)){
-          accessor->second = nullptr;
+        auto range = precnode->edges.equal_range(precKey);
+        if (range.first != precnode->edges.end()){
+          range.first->second = nullptr;
           precnode->edges.erase(precKey);
-          accessor.release();
         }
       }
       precnode = nnode;

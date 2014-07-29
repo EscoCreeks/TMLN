@@ -1,6 +1,6 @@
 #include <common.hh>
-#include <trie.hh>
 #include <dict.hh>
+#include <trie.hh>
 
 int main(int argc, char** argv)
 {
@@ -15,58 +15,17 @@ int main(int argc, char** argv)
   std::string inputDictPath = argv[1];
   std::string outputFilePath = argv[2];
 
-  std::ifstream inputDict(inputDictPath);
-  std::cout << "Parsing dict: " <<  inputDictPath << std::endl;
-  std::vector<Entry> entries = ParseDict(inputDict);
+  std::ifstream input(inputDictPath);
+  std::vector<Entry> dict = ParseDict(input);
+  input.close();
 
-  std::cout << std::endl << "***** Simple Build ****" << std::endl;
-  {
-    SimpleTrieBuilder trie = SimpleTrieBuilder(entries);
-    {
-      time_guard tg ("simple build: ");
-      trie.Build();
-    }
-    {
-      time_guard tg ("simple compact: ");
-      trie.Compact();
-    }
-  }
-  std::cout << std::endl << "***** Locked Build ****" << std::endl;
-  {
-    LockedTrieBuilder trie(entries);
-    {
-      time_guard tg ("locked build: ");
-      trie.Build();
-    }
-    {
-      time_guard tg ("locked compact: ");
-      trie.Compact();
-    }
-  }
-  std::cout << std::endl << "***** Tbb pointer Build ****" << std::endl;
-  {
-    LocklessTrieBuilder trie = LocklessTrieBuilder(entries);
-    {
-      time_guard tg ("tbb pointer build: ");
-      trie.Build();
-    }
-    {
-      time_guard tg ("tbb pointer compact: ");
-      trie.Compact();
-    }
-  }
-  std::cout << std::endl << "***** Tbb copy Build ****" << std::endl;
-  {
-    TbbParallelTrieBuilder trie = TbbParallelTrieBuilder(entries);
-    {
-      time_guard tg ("tbb copy build: ");
-      trie.Build();
-    }
-    {
-      time_guard tg ("tbb copy compact: ");
-      trie.Compact();
-    }
-  }
+  SimpleTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
+  Trie trie = tb.Serialize();
+  std::ofstream output(outputFilePath);
+  trie.Save(output);
+  output.close();
 
   return 0;
 }

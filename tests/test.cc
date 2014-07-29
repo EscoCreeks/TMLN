@@ -59,18 +59,6 @@ TEST_F(Base, LockedBuild)
   tb.Build();
 }
 
-TEST_F(Base, TbbPBuild)
-{
-  LocklessTrieBuilder tb(dict);
-  tb.Build();
-}
-
-TEST_F(Base, TbbBuild)
-{
-  TbbParallelTrieBuilder tb(dict);
-  tb.Build();
-}
-
 class Compare : public testing::Test
 {
 protected:
@@ -92,7 +80,6 @@ protected:
   SimpleTrieNode refTrie;
 
 private:
-  //const std::string dictPath = "assignment/words.txt";
   const std::string dictPath = "tests/dicts/dict10000.txt";
 };
 
@@ -104,20 +91,6 @@ TEST_F(Compare, SimpleBuild)
 }
 
 TEST_F(Compare, TbbPBuild)
-{
-  LocklessTrieBuilder tb(dict);
-  tb.Build();
-  TestTrie(refTrie, tb.GetRoot());
-}
-
-TEST_F(Compare, LockedBuild)
-{
-  LockedTrieBuilder tb(dict);
-  tb.Build();
-  TestTrie(refTrie, tb.GetRoot());
-}
-
-TEST_F(Compare, TbbBuild)
 {
   LocklessTrieBuilder tb(dict);
   tb.Build();
@@ -146,8 +119,12 @@ protected:
   SimpleTrieNode refTrie;
 
 private:
+<<<<<<< HEAD
   //const std::string dictPath = "assignment/words.txt";
   const std::string dictPath = "tests/dicts/10000.md5.txt";
+=======
+  const std::string dictPath = "tests/dicts/dict10.txt";
+>>>>>>> starting serialization
 };
 
 TEST_F(CompareCompact, SimpleCompact)
@@ -173,11 +150,34 @@ TEST_F(CompareCompact, TbbPCompact)
   tb.Compact();
 }
 
-TEST_F(CompareCompact, TbbCompact)
+class Serialize : public testing::Test
 {
-  LocklessTrieBuilder tb(dict);
+protected:
+  virtual void SetUp()
+  {
+    std::ifstream dictStream(dictPath);
+    ASSERT_TRUE(dictStream.is_open());
+    dict = ParseDict(dictStream);
+    dictStream.close();
+    EXPECT_FALSE(dict.empty());
+    RecordProperty("EntryCount", dict.size());
+  }
+
+  std::vector<Entry> dict;
+
+private:
+  const std::string dictPath = "assignment/words.txt";
+};
+
+TEST_F(Serialize, Serialization)
+{
+  SimpleTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
+<<<<<<< HEAD
+=======
+  Trie trie(tb.Serialize());
+>>>>>>> starting serialization
 }
 
 int main(int argc, char **argv)

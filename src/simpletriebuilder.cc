@@ -22,6 +22,11 @@ void SimpleTrieBuilder::Build()
   }
 }
 
+Trie SimpleTrieBuilder::Serialize()
+{
+  
+}
+
 SimpleTrieNode::SimpleTrieNode()
   : edges()
 {

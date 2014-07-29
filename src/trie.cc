@@ -5,7 +5,7 @@ Trie::Trie(std::string serializedPath)
   NOT_IMPLEMENTED();
 }
 
-void Trie::Save(std::ostream out)
+void Trie::Save(std::ostream& out)
 {
   NOT_IMPLEMENTED();
 }

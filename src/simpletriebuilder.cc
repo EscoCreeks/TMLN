@@ -22,9 +22,30 @@ void SimpleTrieBuilder::Build()
   }
 }
 
+std::pair<int,int> CountTrie(SimpleTrieNode* root)
+{
+  std::pair<int,int> count = std::make_pair(1, root->edges.size());
+  for (std::pair<std::string, SimpleTrieNode*> edge : root->edges)
+  {
+    std::pair<int,int> res = CountTrie(edge.second);
+    count.first += res.first;
+    count.second += res.second;
+  }
+  return count;
+}
+
 Trie SimpleTrieBuilder::Serialize()
 {
-  
+  /*
+   * Count number of trie node element
+   * Count number of trie node
+   */
+  std::pair<int,int> count = CountTrie(&_root);
+  int sizeToAlloc = sizeof(int)*count.first+sizeof(TrieElement)*count.second;
+  std::cout << "(" << count.first << "," << count.second << ")"
+            << " allocate " << sizeToAlloc/1024/1024 << "meg" << std::endl;
+  void* buff = malloc(sizeToAlloc);
+  NOT_IMPLEMENTED();
 }
 
 SimpleTrieNode::SimpleTrieNode()

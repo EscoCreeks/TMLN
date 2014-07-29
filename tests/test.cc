@@ -119,12 +119,7 @@ protected:
   SimpleTrieNode refTrie;
 
 private:
-<<<<<<< HEAD
-  //const std::string dictPath = "assignment/words.txt";
   const std::string dictPath = "tests/dicts/10000.md5.txt";
-=======
-  const std::string dictPath = "tests/dicts/dict10.txt";
->>>>>>> starting serialization
 };
 
 TEST_F(CompareCompact, SimpleCompact)
@@ -174,10 +169,8 @@ TEST_F(Serialize, Serialization)
   SimpleTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
-<<<<<<< HEAD
-=======
+
   Trie trie(tb.Serialize());
->>>>>>> starting serialization
 }
 
 int main(int argc, char **argv)

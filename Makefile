@@ -5,22 +5,31 @@ Out = build
 CBIN = TextMiningCompiler
 ABIN = TextMiningApp
 
-CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedtrie.cc src/tbbparalleltriebuilder.cc
+CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedtrie.cc src/tbbparalleltriebuilder.cc src/main.cc
+ASRC = src/dict.cc src/trie.cc src/appmain.cc
 
 CXXFLAGS = -I include -std=c++11 -O3 -fstack-protector
 LDFLAGS = -ltbb
 
 COBJS = ${CSRC:.cc=.o}
+AOBJS = ${ASRC:.cc=.o}
 CDEPS = ${CSRC:.cc=.deps}
+ADEPS = ${ASRC:.cc=.deps}
 
-all:  ${Out} ${CBIN}
+all:  ${Out} ${CBIN} ${ABIN}
 
 ref: ${Out}/ref.dict
 
 ${Out}/${CBIN}: depend ${COBJS}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS} src/main.cc
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS}
 
 ${CBIN}: ${Out}/${CBIN}
+	cp $< $@
+
+${Out}/${ABIN}: ${AOBJS}
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${AOBJS}
+
+${ABIN}: ${Out}/${ABIN}
 	cp $< $@
 
 depend: ${CDEPS}
@@ -53,9 +62,9 @@ external/gtest/lib/libgtest.a:
 	cd external/gtest/lib; 	cmake ..; make
 
 clean:
-	${RM} -rf build ${CBIN} ${COBJS} ${CDEPS}
+	${RM} -rf build ${CBIN} ${COBJS} ${CDEPS} ${ADEPS} ${AOBJS}
 
 .PHONY: ref bench test
 .PHONY: build/tests/test.xml
 
--include ${CDEPS}
+-include ${CDEPS} ${ADEPS}

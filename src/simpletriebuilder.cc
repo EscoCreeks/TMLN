@@ -63,7 +63,6 @@ void* TrieWriter(void* buff, SimpleTrieNode* root, std::map<std::string, int>& s
   i = 0;
   for (auto edge : root->edges)
   {
-    std::cout << "goin to " << edge.first << std::endl;
     int offset = static_cast<char*>(buffEnd) - reinterpret_cast<char*>(&node->trieElt[i]);
     assert(offset > 0);
     node->trieElt[i].SetTrieOffset(offset);
@@ -120,7 +119,6 @@ void StringWriter(void* buff, std::map<int,std::string> rStrMap)
   for (int i = 0; i < rStrMap.size(); ++i)
   {
     it = rStrMap.find(offset);
-    std::cout << "writting " << it->second << std::endl;
     assert(it != rStrMap.end());
     strcpy(cbuff, it->second.c_str());
     cbuff += it->second.size() + 1;
@@ -141,8 +139,7 @@ Trie SimpleTrieBuilder::Serialize(const std::string& outputPath)
 
   *static_cast<int*>(fullBuff) = strbuffSize;
   StringWriter(strbuff, ReverseStringMap(strmap));
-  std::cout << "diff " << static_cast<char*>(buff) + buffSize -
-    static_cast<char*>(TrieWriter(buff, &_root, strmap)) << std::endl;
+  TrieWriter(buff, &_root, strmap);
 
   if (outputPath != "")
   {

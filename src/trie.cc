@@ -1,8 +1,8 @@
 #include <trie.hh>
 
-void TrieElement::SetStrId(int id)
+TrieElement::TrieElement(int strId, int freq)
+  : _strId(strId), _freq(freq)
 {
-  _strId = id;
 }
 
 void TrieElement::SetTrieOffset(int off)
@@ -14,6 +14,16 @@ Trie TrieElement::GetTrie()
 {
   assert(_trieOffset > 0 && "if this fail, you tried to get a trie node from a leaf");
   return Trie(reinterpret_cast<char*>(this) + _trieOffset);
+}
+
+int TrieElement::GetFreq()
+{
+  return _freq;
+}
+
+bool TrieElement::IsOutNode()
+{
+  return _freq != 0;
 }
 
 Trie::Trie(std::string serializedPath)

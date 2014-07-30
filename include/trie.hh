@@ -10,14 +10,18 @@ class Trie;
 class TrieElement
 {
 public:
+  TrieElement(int strId, int freq);
   char* GetStr();
-  void SetStrId(int id);
-  void SetTrieOffset(int off);
   Trie GetTrie();
+  int GetFreq();
+  bool IsOutNode();
+
+  void SetTrieOffset(int off);
 private:
   static char* __base;
   int _strId;
   int _trieOffset;
+  int _freq;
 };
 
 

@@ -54,8 +54,7 @@ void* TrieWriter(void* buff, SimpleTrieNode* root, std::map<std::string, int>& s
   int i = 0;
   for (auto edge : root->edges)
   {
-    TrieElement* elt = new (&node->trieElt[i]) TrieElement();
-    elt->SetStrId(strmap[edge.first]);
+    TrieElement* elt = new (&node->trieElt[i]) TrieElement(strmap[edge.first], root->freq);
     ++i;
   }
   // split

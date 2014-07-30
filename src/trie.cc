@@ -137,3 +137,22 @@ const TbbTrieNode* TbbTrieNode::GetChild(std::string symb)
   else
     return nullptr;
 }
+
+bool CheckDistance(char* ref, char* test, int* threshold)
+{
+  for(; *ref == *test; ++ref, ++test)
+  {
+    if (*test == 0)
+      return true;
+    if (*ref != *test)
+      (*threshold)--;
+    if (*threshold < 0)
+      return false;
+  }
+  while (*test)
+  {
+    (*threshold)--;
+    test++;
+  }
+  return (*threshold) >= 0;
+}

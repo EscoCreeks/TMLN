@@ -12,6 +12,7 @@
 #include <vector>
 #include <queue>
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
 #include <random>
 #include <iomanip>

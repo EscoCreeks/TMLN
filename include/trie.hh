@@ -26,16 +26,18 @@ class Trie
 public:
   Trie(std::string serializedPath);
   Trie(void* raw);
+  Trie(void* strBase, void* raw);
 
   int GetElementCount();
   TrieElement* GetElements();
 private:
+  static char* _strBase_;
   void* _raw;
 };
 
 struct pNode {
   int count;
-  TrieElement trieElt[];
+  TrieElement trieElt[0];
 };
 
 struct TrieNode

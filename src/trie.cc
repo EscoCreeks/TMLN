@@ -36,6 +36,14 @@ TrieElement* Trie::GetElements()
   return static_cast<TrieElement*>(_raw+sizeof(pNode::count));
 }
 
+char* Trie::_strBase_ = nullptr;
+
+Trie::Trie(void* strBase, void* raw)
+{
+  _strBase_ = static_cast<char*>(strBase);
+  _raw = raw;
+}
+
 TrieBuilder::TrieBuilder(const std::vector<Entry>& dict)
   : _dict(dict)
 {

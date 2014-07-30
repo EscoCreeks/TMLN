@@ -84,6 +84,7 @@ void indexStringSub(std::map<std::string, int>& map, int& index, SimpleTrieNode*
       map.insert(std::make_pair(edge.first, index));
       index += edge.first.size() + 1;
     }
+    indexStringSub(map, index, edge.second);
   }
 }
 
@@ -95,27 +96,61 @@ std::map<std::string, int> indexString(SimpleTrieNode* root)
   return map;
 }
 
-void* SimpleTrieBuilder::Serialize(const std::string& outputPath)
+std::map<int,std::string> ReverseStringMap(std::map<std::string,int> map)
+{
+  std::map<int,std::string> rMap;
+  for (auto elt : map)
+    rMap[elt.second] = elt.first;
+  return rMap;
+}
+
+int StringBufferToAlloc(std::map<std::string,int> strMap)
+{
+  int accu = 0;
+  for (auto elt : strMap)
+    accu += elt.first.size() + 1;
+  return accu;
+}
+
+void StringWriter(void* buff, std::map<int,std::string> rStrMap)
+{
+  std::map<int, std::string>::iterator it;
+  int offset = 0;
+  char* cbuff = static_cast<char*>(buff);
+  for (int i = 0; i < rStrMap.size(); ++i)
+  {
+    it = rStrMap.find(offset);
+    std::cout << "writting " << it->second << std::endl;
+    assert(it != rStrMap.end());
+    strcpy(cbuff, it->second.c_str());
+    cbuff += it->second.size() + 1;
+    offset += it->second.size() + 1;
+  }
+}
+
+Trie SimpleTrieBuilder::Serialize(const std::string& outputPath)
 {
   std::map<std::string, int> strmap = indexString(&_root);
   std::pair<int,int> count = CountTrie(&_root);
 
-  std::cout << "elt count " << count.first
-            << " leaf count " << count.second
-            << " to alloc " << ToAlloc(&_root) << std::endl;
   int buffSize = ToAlloc(&_root);
-  void* buff = malloc(buffSize);
+  int strbuffSize = StringBufferToAlloc(strmap);
+  void* fullBuff = malloc(buffSize + strbuffSize + sizeof(int));
+  void* strbuff = fullBuff + sizeof(int);
+  void* buff = fullBuff + strbuffSize + sizeof(int);
 
+  *static_cast<int*>(fullBuff) = strbuffSize;
+  StringWriter(strbuff, ReverseStringMap(strmap));
   std::cout << "diff " << static_cast<char*>(buff) + buffSize -
     static_cast<char*>(TrieWriter(buff, &_root, strmap)) << std::endl;
 
   if (outputPath != "")
   {
     std::ofstream output(outputPath, std::ios::out | std::ios::binary);
-    output.write(static_cast<char*>(buff), buffSize);
+    output.write(static_cast<char*>(fullBuff), strbuffSize + buffSize);
     output.close();
   }
-  return buff;
+  return Trie(strbuff, buff);
 }
 
 SimpleTrieNode::SimpleTrieNode()

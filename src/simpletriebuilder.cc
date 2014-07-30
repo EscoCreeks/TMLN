@@ -111,7 +111,7 @@ void* SimpleTrieBuilder::Serialize(const std::string& outputPath)
   int buffSize = ToAlloc(&_root);
   void* buff = malloc(buffSize);
 
-  std::cout << "diff " << static_cast<char*>(buff) -
+  std::cout << "diff " << static_cast<char*>(buff) + buffSize -
     static_cast<char*>(TrieWriter(buff, &_root, strmap)) << std::endl;
 
   if (outputPath != "")

@@ -7,7 +7,7 @@ ABIN = TextMiningApp
 
 CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedtrie.cc src/tbbparalleltriebuilder.cc
 
-CXXFLAGS = -I include -std=c++11 -O3
+CXXFLAGS = -I include -std=c++11 -O3 -fstack-protector
 LDFLAGS = -ltbb
 
 COBJS = ${CSRC:.cc=.o}

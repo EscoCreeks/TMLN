@@ -1,0 +1,2 @@
+mammal 0
+mama 0

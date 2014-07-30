@@ -44,11 +44,15 @@ void* TrieWriter(void* buff, SimpleTrieNode* root)
   for (std::pair<std::string, SimpleTrieNode*> edge : root->edges)
   {
     buff = TrieWriter(buff, edge.second);
-    SimpleTrieNode* it = static_cast<SimpleTrieNode*>(buff) - 1;
+    std::cout << "using " << buff << std::endl;
+    TrieElement* it = static_cast<TrieElement*>(buff) - 1;
+    std::cout << "allocated for element " << edge.first << " at " << it<< std::endl;
+    buff = it;
     TrieElement* elt = new (it) TrieElement();
     elt->SetStrId(42);
     elt->SetTrieOffset(43);
   }
+  std::cout << "allocate for count " << root->edges.size() << std::endl;
   buff -= sizeof(pNode::count);
   *static_cast<int*>(buff) = 40;
   return buff;
@@ -63,12 +67,16 @@ Trie SimpleTrieBuilder::Serialize()
   int count = CountTrie(&_root);
   int sizeToAlloc = (sizeof(int)+sizeof(TrieElement))*count;
   std::cout << "(" << count << ")"
-            << " allocate " << sizeToAlloc/1024/1024 << "meg" << std::endl;
-  void* buff = malloc(sizeToAlloc);
-  std::cout << "malloc \t" << buff << std::endl;
-  std::cout << "malloc end \t" << buff + sizeToAlloc << std::endl;
-  std::cout << "rtn buff" << TrieWriter(buff + sizeToAlloc, &_root) << std::endl;
-  NOT_IMPLEMENTED();
+            << " allocate " << sizeToAlloc << "b" << std::endl;
+  char* buff = static_cast<char*>(malloc(sizeToAlloc));
+  char* rtn = static_cast<char*>(TrieWriter(buff + sizeToAlloc, &_root));
+  std::cout << "malloc \t" << (void*)buff << std::endl;
+  std::cout << "malloc end \t" << (void*)(buff + sizeToAlloc) << std::endl;
+  std::cout << "rtn buff" << (void*)rtn << std::endl;
+  std::cout << "size to alloc " << sizeToAlloc << std::endl;
+  std::cout << "diff malloc - rtn " << (int) (buff - rtn) << std::endl;
+  std::cout << "sizeof te " << sizeof(TrieElement) << std::endl;
+  std::cout << "sizeof int " << sizeof(pNode::count) << std::endl;
 }
 
 SimpleTrieNode::SimpleTrieNode()

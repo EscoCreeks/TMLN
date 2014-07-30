@@ -161,7 +161,8 @@ protected:
   std::vector<Entry> dict;
 
 private:
-  const std::string dictPath = "assignment/words.txt";
+  //const std::string dictPath = "assignment/words.txt";
+  const std::string dictPath = "tests/dicts/toosimple.txt";
 };
 
 TEST_F(Serialize, Serialization)

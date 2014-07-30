@@ -5,6 +5,7 @@
 #include <dict.hh>
 #include <tbb/concurrent_hash_map.h>
 
+class Trie;
 
 class TrieElement
 {

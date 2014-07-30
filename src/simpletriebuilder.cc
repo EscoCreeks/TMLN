@@ -135,6 +135,7 @@ SimpleTrieNode::SimpleTrieNode(const SimpleTrieNode& base)
     nedges[edge.first] = new SimpleTrieNode(*edge.second);
   edges = nedges;
   isOutNode = base.isOutNode;
+  freq = base.freq;
 }
 
 SimpleTrieNode& SimpleTrieNode::operator=(const SimpleTrieNode& base)
@@ -144,6 +145,7 @@ SimpleTrieNode& SimpleTrieNode::operator=(const SimpleTrieNode& base)
     nedges[edge.first] = new SimpleTrieNode(*edge.second);
   edges = nedges;
   isOutNode = base.isOutNode;
+  freq = base.freq;
   return *this;
 }
 
@@ -186,6 +188,8 @@ void CompactNode(SimpleTrieNode& prec, std::string keyFather, SimpleTrieNode* cu
       newKey += nnode->edges.begin()->first;
       nnode = nnode->edges.begin()->second;
     } while (nnode->edges.size() == 1 && !nnode->isOutNode);
+    precnode->edges[precKey] = nullptr;
+    precnode->edges.erase(precKey);
     prec.edges[newKey] = nnode;
     CompactNode(prec, newKey, prec.edges[newKey]);
   }

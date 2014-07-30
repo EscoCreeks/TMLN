@@ -49,7 +49,7 @@ int ToAlloc(SimpleTrieNode* root)
     sizeof(TrieElement)*(res.first);
 }
 
-void* TrieWriter(void* buff, SimpleTrieNode* root)
+void* TrieWriter(void* buff, SimpleTrieNode* root, std::map<std::string, int>& strmap)
 {
   if (root->edges.size() == 0)
     return buff;
@@ -60,7 +60,7 @@ void* TrieWriter(void* buff, SimpleTrieNode* root)
   for (auto edge : root->edges)
   {
     TrieElement* elt = new (&node->trieElt[i]) TrieElement();
-    elt->SetStrId(0x42);
+    elt->SetStrId(strmap[edge.first]);
     ++i;
   }
   // split
@@ -68,22 +68,52 @@ void* TrieWriter(void* buff, SimpleTrieNode* root)
   i = 0;
   for (auto edge : root->edges)
   {
+    std::cout << "goin to " << edge.first << std::endl;
     int offset = static_cast<char*>(buffEnd) - reinterpret_cast<char*>(&node->trieElt[i]);
+    assert(offset > 0);
     node->trieElt[i].SetTrieOffset(offset);
-    buffEnd = TrieWriter(buff, edge.second);
+    buffEnd = TrieWriter(buffEnd, edge.second, strmap);
+    ++i;
   }
   return buffEnd;
 }
 
+
+void indexStringSub(std::map<std::string, int>& map, int& index, SimpleTrieNode* root)
+{
+  for (auto edge : root->edges)
+  {
+    std::map<std::string,int>::iterator it = map.find(edge.first);
+    if (it == map.end())
+    {
+      map.insert(std::make_pair(edge.first, index));
+      index += edge.first.size() + 1;
+    }
+  }
+}
+
+std::map<std::string, int> indexString(SimpleTrieNode* root)
+{
+  int index = 0;
+  std::map<std::string, int> map;
+  indexStringSub(map, index, root);
+  return map;
+}
+
 void* SimpleTrieBuilder::Serialize(const std::string& outputPath)
 {
+  std::map<std::string, int> strmap = indexString(&_root);
   std::pair<int,int> count = CountTrie(&_root);
+
   std::cout << "elt count " << count.first
             << " leaf count " << count.second
             << " to alloc " << ToAlloc(&_root) << std::endl;
   int buffSize = ToAlloc(&_root);
   void* buff = malloc(buffSize);
-  std::cout << "diff " << static_cast<char*>(buff) - static_cast<char*>(TrieWriter(buff, &_root)) << std::endl;
+
+  std::cout << "diff " << static_cast<char*>(buff) -
+    static_cast<char*>(TrieWriter(buff, &_root, strmap)) << std::endl;
+
   if (outputPath != "")
   {
     std::ofstream output(outputPath, std::ios::out | std::ios::binary);

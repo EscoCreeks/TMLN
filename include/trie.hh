@@ -12,6 +12,7 @@ public:
   char* GetStr();
   void SetStrId(int id);
   void SetTrieOffset(int off);
+  Trie GetTrie();
 private:
   static char* __base;
   int _strId;
@@ -24,6 +25,9 @@ class Trie
 public:
   Trie(std::string serializedPath);
   Trie(void* raw);
+
+  int GetElementCount();
+  TrieElement* GetElements();
 private:
   void* _raw;
 };

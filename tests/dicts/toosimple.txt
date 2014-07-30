@@ -1,3 +1,4 @@
 mammal 0
 mama 0
+mamout 0
 bite 0

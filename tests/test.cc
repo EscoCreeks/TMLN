@@ -150,28 +150,65 @@ class Serialize : public testing::Test
 protected:
   virtual void SetUp()
   {
-    std::ifstream dictStream(dictPath);
-    ASSERT_TRUE(dictStream.is_open());
-    dict = ParseDict(dictStream);
-    dictStream.close();
-    EXPECT_FALSE(dict.empty());
-    RecordProperty("EntryCount", dict.size());
   }
 
-  std::vector<Entry> dict;
-
 private:
-  //const std::string dictPath = "assignment/words.txt";
-  const std::string dictPath = "tests/dicts/toosimple.txt";
 };
 
 TEST_F(Serialize, Serialization)
 {
+  const std::string dictPath = "tests/dicts/toosimple.txt";
+  std::ifstream dictStream(dictPath);
+  ASSERT_TRUE(dictStream.is_open());
+  std::vector<Entry> dict = ParseDict(dictStream);
+  dictStream.close();
+  EXPECT_FALSE(dict.empty());
+  RecordProperty("EntryCount", dict.size());
+
   SimpleTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
 
   Trie trie(tb.Serialize());
+}
+
+TEST_F(Serialize, Count)
+{
+  const std::string dictPath = "tests/dicts/toosimple.txt";
+  std::ifstream dictStream(dictPath);
+  ASSERT_TRUE(dictStream.is_open());
+  std::vector<Entry> dict = ParseDict(dictStream);
+  dictStream.close();
+  EXPECT_FALSE(dict.empty());
+  RecordProperty("EntryCount", dict.size());
+
+  SimpleTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
+
+  Trie trie(tb.Serialize());
+
+  ASSERT_EQ(trie.GetElementCount(), 2);
+}
+
+TEST_F(Serialize, GotoChild)
+{
+  const std::string dictPath = "tests/dicts/toosimple.txt";
+  std::ifstream dictStream(dictPath);
+  ASSERT_TRUE(dictStream.is_open());
+  std::vector<Entry> dict = ParseDict(dictStream);
+  dictStream.close();
+  EXPECT_FALSE(dict.empty());
+  RecordProperty("EntryCount", dict.size());
+
+  SimpleTrieBuilder tb(dict);
+  tb.Build();
+  tb.Compact();
+
+  Trie trie(tb.Serialize());
+  ASSERT_EQ(trie.GetElementCount(), 2);
+  int count = trie.GetElements()[1].GetTrie().GetElementCount();
+  ASSERT_EQ(count, 3);
 }
 
 int main(int argc, char **argv)

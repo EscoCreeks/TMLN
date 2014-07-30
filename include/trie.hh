@@ -33,6 +33,11 @@ private:
   void* _raw;
 };
 
+struct pNode {
+  int count;
+  TrieElement trieElt[];
+};
+
 struct TrieNode
 {
   std::vector<std::string> GetKeys();

@@ -10,6 +10,12 @@ void TrieElement::SetTrieOffset(int off)
   _trieOffset = off;
 }
 
+Trie TrieElement::GetTrie()
+{
+  assert(_trieOffset > 0 && "if this fail, you tried to get a trie node from a leaf");
+  return Trie(reinterpret_cast<char*>(this) + _trieOffset);
+}
+
 Trie::Trie(std::string serializedPath)
 {
   NOT_IMPLEMENTED();
@@ -18,6 +24,16 @@ Trie::Trie(std::string serializedPath)
 Trie::Trie(void* raw)
   : _raw(raw)
 {
+}
+
+int Trie::GetElementCount()
+{
+  return static_cast<pNode*>(_raw)->count;
+}
+
+TrieElement* Trie::GetElements()
+{
+  return static_cast<TrieElement*>(_raw+sizeof(pNode::count));
 }
 
 TrieBuilder::TrieBuilder(const std::vector<Entry>& dict)

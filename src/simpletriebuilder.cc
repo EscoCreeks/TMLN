@@ -37,11 +37,6 @@ std::pair<int,int> CountTrie(SimpleTrieNode* root)
   return count;
 }
 
-struct pNode {
-  int count;
-  TrieElement trieElt[];
-};
-
 int ToAlloc(SimpleTrieNode* root)
 {
   std::pair<int,int> res = CountTrie(root);

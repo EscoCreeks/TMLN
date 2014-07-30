@@ -12,6 +12,7 @@ struct SimpleTrieNode
   const SimpleTrieNode* GetChild(const std::string& key) const;
 
   std::map<std::string, SimpleTrieNode*> edges;
+  int freq = 0;
   bool isOutNode = false;
 };
 

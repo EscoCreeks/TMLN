@@ -10,6 +10,7 @@ void AddTrie(SimpleTrieNode& root, const Entry& entry)
       nnode = new SimpleTrieNode();
     node = nnode;
   }
+  node->freq = entry.freq;
   node->isOutNode = true;
 }
 

@@ -20,8 +20,8 @@ all:  ${Out} ${CBIN} ${ABIN}
 
 ref: ${Out}/ref.dict
 
-${Out}/${CBIN}: depend ${COBJS}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS} src/main.cc
+${Out}/${CBIN}: depend ${COBJS} src/main.cc
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS} src/main.o
 
 ${CBIN}: ${Out}/${CBIN}
 	cp $< $@

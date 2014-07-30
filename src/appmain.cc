@@ -16,5 +16,9 @@ int main(int argc, char** argv)
   fstat(fd, &fileStat);
 
   void* raw = mmap(nullptr, fileStat.st_size, PROT_READ, MAP_SHARED, fd, 0);
+  int strbuffSize = *static_cast<int*>(raw);
+  void* strbuff = raw + 1;
+  void* buff = strbuff + strbuffSize;
 
+  Trie trie(strbuff, buff);
 }

@@ -5,7 +5,7 @@ Out = build
 CBIN = TextMiningCompiler
 ABIN = TextMiningApp
 
-CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedtrie.cc src/tbbparalleltriebuilder.cc src/main.cc
+CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc src/locklesstriebuilder.cc src/lockedtrie.cc src/tbbparalleltriebuilder.cc
 ASRC = src/dict.cc src/trie.cc src/appmain.cc
 
 CXXFLAGS = -I include -std=c++11 -O3 -fstack-protector
@@ -21,7 +21,7 @@ all:  ${Out} ${CBIN} ${ABIN}
 ref: ${Out}/ref.dict
 
 ${Out}/${CBIN}: depend ${COBJS}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS}
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS} src/main.cc
 
 ${CBIN}: ${Out}/${CBIN}
 	cp $< $@

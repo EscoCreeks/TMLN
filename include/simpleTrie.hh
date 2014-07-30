@@ -21,7 +21,7 @@ public:
   SimpleTrieBuilder(const std::vector<Entry>& dict) : _dict(dict) {};
   void Build();
   void Compact();
-  Trie Serialize();
+  void* Serialize(const std::string& outputPath="");
   const SimpleTrieNode& GetRoot() { return _root; };
 private:
   std::vector<Entry> _dict;

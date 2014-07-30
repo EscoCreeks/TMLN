@@ -23,10 +23,9 @@ class Trie
 {
 public:
   Trie(std::string serializedPath);
-  void Save(std::ostream& out);
+  Trie(void* raw);
 private:
-  int _count;
-  TrieElement* _elt;
+  void* _raw;
 };
 
 struct TrieNode

@@ -22,61 +22,74 @@ void SimpleTrieBuilder::Build()
   }
 }
 
-int CountTrie(SimpleTrieNode* root)
+std::pair<int,int> CountTrie(SimpleTrieNode* root)
 {
-  int count = root->edges.size();
+  if (root->edges.size() == 0)
+    return std::make_pair(0,1);
+  std::pair<int,int> count = std::make_pair(root->edges.size(), 0);
   for (std::pair<std::string, SimpleTrieNode*> edge : root->edges)
-    count += CountTrie(edge.second);
+  {
+    std::pair<int,int> res = CountTrie(edge.second);
+    count.first += res.first;
+    count.second += res.second;
+  }
   return count;
 }
 
 struct pNode {
   int count;
-  TrieElement* trieElt;
+  TrieElement trieElt[];
 };
-void* TrieWriter(void* buff, SimpleTrieNode* root)
-{
-  // pNode* base = static_cast<pNode*>(buff);
-  // base->count = root->edges.size();
-  if (root->edges.size() == 0)
-    return buff;
 
-  for (std::pair<std::string, SimpleTrieNode*> edge : root->edges)
-  {
-    buff = TrieWriter(buff, edge.second);
-    std::cout << "using " << buff << std::endl;
-    TrieElement* it = static_cast<TrieElement*>(buff) - 1;
-    std::cout << "allocated for element " << edge.first << " at " << it<< std::endl;
-    buff = it;
-    TrieElement* elt = new (it) TrieElement();
-    elt->SetStrId(42);
-    elt->SetTrieOffset(43);
-  }
-  std::cout << "allocate for count " << root->edges.size() << std::endl;
-  buff -= sizeof(pNode::count);
-  *static_cast<int*>(buff) = 40;
-  return buff;
+int ToAlloc(SimpleTrieNode* root)
+{
+  std::pair<int,int> res = CountTrie(root);
+  return sizeof(pNode::count)*(1+res.first-res.second) +
+    sizeof(TrieElement)*(res.first);
 }
 
-Trie SimpleTrieBuilder::Serialize()
+void* TrieWriter(void* buff, SimpleTrieNode* root)
 {
-  /*
-   * Count number of trie node element
-   * Count number of trie node
-   */
-  int count = CountTrie(&_root);
-  int sizeToAlloc = (sizeof(int)+sizeof(TrieElement))*count;
-  std::cout << "(" << count << ")"
-            << " allocate " << sizeToAlloc << "b" << std::endl;
-  char* buff = static_cast<char*>(malloc(sizeToAlloc));
-  char* rtn = static_cast<char*>(TrieWriter(buff + sizeToAlloc, &_root));
-  std::cout << "malloc \t" << (void*)buff << std::endl;
-  std::cout << "malloc end \t" << (void*)(buff + sizeToAlloc) << std::endl;
-  std::cout << "rtn buff" << (void*)rtn << std::endl;
-  std::cout << "size to alloc " << sizeToAlloc << std::endl;
-  std::cout << "diff malloc - rtn " << (int) (buff - rtn) << std::endl;
-  std::cout << "sizeof te " << sizeof(TrieElement) << std::endl;
-  std::cout << "sizeof int " << sizeof(pNode::count) << std::endl;
+  if (root->edges.size() == 0)
+    return buff;
+  // one layer
+  pNode* node = static_cast<pNode*>(buff);
+  node->count = root->edges.size();
+  int i = 0;
+  for (auto edge : root->edges)
+  {
+    TrieElement* elt = new (&node->trieElt[i]) TrieElement();
+    elt->SetStrId(0x42);
+    ++i;
+  }
+  // split
+  void* buffEnd = &node->trieElt[i];
+  i = 0;
+  for (auto edge : root->edges)
+  {
+    int offset = static_cast<char*>(buffEnd) - reinterpret_cast<char*>(&node->trieElt[i]);
+    node->trieElt[i].SetTrieOffset(offset);
+    buffEnd = TrieWriter(buff, edge.second);
+  }
+  return buffEnd;
+}
+
+void* SimpleTrieBuilder::Serialize(const std::string& outputPath)
+{
+  std::pair<int,int> count = CountTrie(&_root);
+  std::cout << "elt count " << count.first
+            << " leaf count " << count.second
+            << " to alloc " << ToAlloc(&_root) << std::endl;
+  int buffSize = ToAlloc(&_root);
+  void* buff = malloc(buffSize);
+  std::cout << "diff " << static_cast<char*>(buff) - static_cast<char*>(TrieWriter(buff, &_root)) << std::endl;
+  if (outputPath != "")
+  {
+    std::ofstream output(outputPath, std::ios::out | std::ios::binary);
+    output.write(static_cast<char*>(buff), buffSize);
+    output.close();
+  }
+  return buff;
 }
 
 SimpleTrieNode::SimpleTrieNode()

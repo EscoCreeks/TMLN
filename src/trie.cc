@@ -15,9 +15,9 @@ Trie::Trie(std::string serializedPath)
   NOT_IMPLEMENTED();
 }
 
-void Trie::Save(std::ostream& out)
+Trie::Trie(void* raw)
+  : _raw(raw)
 {
-  NOT_IMPLEMENTED();
 }
 
 TrieBuilder::TrieBuilder(const std::vector<Entry>& dict)

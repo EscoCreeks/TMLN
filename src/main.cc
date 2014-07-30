@@ -22,10 +22,6 @@ int main(int argc, char** argv)
   SimpleTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
-  Trie trie = tb.Serialize();
-  std::ofstream output(outputFilePath);
-  trie.Save(output);
-  output.close();
-
+  Trie trie(tb.Serialize(outputFilePath));
   return 0;
 }

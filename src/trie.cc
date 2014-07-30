@@ -162,6 +162,8 @@ bool CheckDistance(char* querry, char* test, int* error)
   while (*test)
   {
     (*error)--;
+    if (*error < 0)
+      return false;
     test++;
   }
   return (*error) >= 0;

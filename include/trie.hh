@@ -53,6 +53,12 @@ struct TrieNode
   bool isOutNode = false;
 };
 
+struct searchRes {
+  int freq;
+  unsigned char error;
+  char* word;
+};
+
 #include <totrash.hh>
 #include <simpleTrie.hh>
 #include <locklessTrie.hh>

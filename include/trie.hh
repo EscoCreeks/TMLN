@@ -10,10 +10,12 @@ class TrieElement
 {
 public:
   char* GetStr();
+  void SetStrId(int id);
+  void SetTrieOffset(int off);
 private:
   static char* __base;
-  int _str_id;
-  int _trie_offset;
+  int _strId;
+  int _trieOffset;
 };
 
 

@@ -1,5 +1,15 @@
 #include <trie.hh>
 
+void TrieElement::SetStrId(int id)
+{
+  _strId = id;
+}
+
+void TrieElement::SetTrieOffset(int off)
+{
+  _trieOffset = off;
+}
+
 Trie::Trie(std::string serializedPath)
 {
   NOT_IMPLEMENTED();

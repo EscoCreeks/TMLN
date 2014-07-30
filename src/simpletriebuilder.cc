@@ -22,16 +22,36 @@ void SimpleTrieBuilder::Build()
   }
 }
 
-std::pair<int,int> CountTrie(SimpleTrieNode* root)
+int CountTrie(SimpleTrieNode* root)
 {
-  std::pair<int,int> count = std::make_pair(1, root->edges.size());
+  int count = root->edges.size();
+  for (std::pair<std::string, SimpleTrieNode*> edge : root->edges)
+    count += CountTrie(edge.second);
+  return count;
+}
+
+struct pNode {
+  int count;
+  TrieElement* trieElt;
+};
+void* TrieWriter(void* buff, SimpleTrieNode* root)
+{
+  // pNode* base = static_cast<pNode*>(buff);
+  // base->count = root->edges.size();
+  if (root->edges.size() == 0)
+    return buff;
+
   for (std::pair<std::string, SimpleTrieNode*> edge : root->edges)
   {
-    std::pair<int,int> res = CountTrie(edge.second);
-    count.first += res.first;
-    count.second += res.second;
+    buff = TrieWriter(buff, edge.second);
+    SimpleTrieNode* it = static_cast<SimpleTrieNode*>(buff) - 1;
+    TrieElement* elt = new (it) TrieElement();
+    elt->SetStrId(42);
+    elt->SetTrieOffset(43);
   }
-  return count;
+  buff -= sizeof(pNode::count);
+  *static_cast<int*>(buff) = 40;
+  return buff;
 }
 
 Trie SimpleTrieBuilder::Serialize()
@@ -40,11 +60,14 @@ Trie SimpleTrieBuilder::Serialize()
    * Count number of trie node element
    * Count number of trie node
    */
-  std::pair<int,int> count = CountTrie(&_root);
-  int sizeToAlloc = sizeof(int)*count.first+sizeof(TrieElement)*count.second;
-  std::cout << "(" << count.first << "," << count.second << ")"
+  int count = CountTrie(&_root);
+  int sizeToAlloc = (sizeof(int)+sizeof(TrieElement))*count;
+  std::cout << "(" << count << ")"
             << " allocate " << sizeToAlloc/1024/1024 << "meg" << std::endl;
   void* buff = malloc(sizeToAlloc);
+  std::cout << "malloc \t" << buff << std::endl;
+  std::cout << "malloc end \t" << buff + sizeToAlloc << std::endl;
+  std::cout << "rtn buff" << TrieWriter(buff + sizeToAlloc, &_root) << std::endl;
   NOT_IMPLEMENTED();
 }
 

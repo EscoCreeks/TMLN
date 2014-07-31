@@ -6,45 +6,29 @@ bool ResultElement::operator<(const ResultElement& res) const
   return dist < res.dist && freq > res.freq;
 }
 
-void Search(std::priority_queue<ResultElement>& results, Trie trie, char* word, char* buff, int err, int limit)
+void AddResult(std::priority_queue<ResultElement>& results, char** stack, TrieElement& trieElt, int err)
 {
-  if (*buff == '\0')
+  static const int usualSize = 15;
+  int count = 0;
+  int buffsize = 0;
+  char* str = 0;
+
+  while (*stack != nullptr)
   {
-    TrieElement* trieElt = trie.GetElements();
-    for (int i = 0; i < trie.GetElementCount(); ++i)
-    {
-      buff = trieElt[i].GetStr();
-      SearchOk(results, trieElt->GetTrie(), word, buff, err, limit);
-      SearchInsert(results, trieElt->GetTrie(), word, buff, err, limit);
-      SearchRemove(results, trieElt->GetTrie(), word, buff, err, limit);
-      SearchSwap(results, trieElt->GetTrie(), word, buff, err, limit);
-    }
+    // if (count % usualSize == 0)
+    //   str = static_cast<char*>(realloc(str, count + usualSize));
+    ++count;
+    buffsize += strlen(*stack);
+    --stack;
   }
-  else
+  str = new char[buffsize + 1];
+  while (count)
   {
-    SearchOk(results, trie, word, buff, err, limit);
-    SearchInsert(results, trie, word, buff, err, limit);
-    SearchRemove(results, trie, word, buff, err, limit);
-    SearchSwap(results, trie, word, buff, err, limit);
+    strcat(str, *stack);
+    ++stack;
+    --count;
   }
-}
-
-void SearchOk(std::priority_queue<ResultElement>& results, Trie trie, char* word, char* buff, int err, int limit)
-{
-  if (*buff != '\0' && *buff == *word)
-    Search(results, trie, ++word, ++buff, err, limit);
-}
-
-void SearchInsert(std::priority_queue<ResultElement>& results, Trie trie, char* word, char* buff, int err, int limit)
-{
-}
-
-void SearchRemove(std::priority_queue<ResultElement>& results, Trie trie, char* word, char* buff, int err, int limit)
-{
-}
-
-void SearchSwap(std::priority_queue<ResultElement>& results, Trie trie, char* word, char* buff, int err, int limit)
-{
+  results.emplace(str, trieElt.GetFreq(), err);
 }
 
 void PrintResults(std::priority_queue<ResultElement>& results)
@@ -57,4 +41,61 @@ void PrintResults(std::priority_queue<ResultElement>& results)
               << ",\"distance\":" << elt.dist;
     results.pop();
   }
+}
+
+void StartSearch(Trie& trie, char* word, int max_err)
+{
+  char* buff = "";
+  char** stack = new char*[1024];
+  std::priority_queue<ResultElement> results;
+  for (int i = 0; i < trie.GetElementCount(); ++i)
+    Search(results, trie.GetElements()[i], word, buff, 0, max_err, stack);
+  PrintResults(results);
+}
+
+void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+{
+  if (*buff == '\0')
+  {
+    Trie trie = trieElt.GetTrie();
+    TrieElement* trieElts = trie.GetElements();
+    for (int i = 0; i < trie.GetElementCount(); ++i)
+    {
+      buff = trieElts[i].GetStr();
+      ++stack;
+      *stack = buff;
+      SearchOk(results, trieElts[i], word, buff, err, limit, stack);
+      SearchInsert(results, trieElts[i], word, buff, err, limit, stack);
+      SearchRemove(results, trieElts[i], word, buff, err, limit, stack);
+      SearchSwap(results, trieElts[i], word, buff, err, limit, stack);
+      --stack;
+    }
+  }
+  else
+  {
+    SearchOk(results, trieElt, word, buff, err, limit, stack);
+    SearchInsert(results, trieElt, word, buff, err, limit, stack);
+    SearchRemove(results, trieElt, word, buff, err, limit, stack);
+    SearchSwap(results, trieElt, word, buff, err, limit, stack);
+  }
+}
+
+void SearchOk(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+{
+  if (*buff != '\0' && *buff == *word)
+    Search(results, trieElt, ++word, ++buff, err, limit, stack);
+  if (*buff == '\0' && *word == '\0' && trieElt.IsOutNode())
+    AddResult(results, stack, trieElt, err);
+}
+
+void SearchInsert(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+{
+}
+
+void SearchRemove(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+{
+}
+
+void SearchSwap(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+{
 }

@@ -7,12 +7,77 @@
   - TextMiningCompiler : sert à dumper un dictionnaire à partir d'un
     fichier rempli de lignes contenant chacune un mot ainsi que sa fréquence.
   - TextMiningApp : charge un dictionnaire et fait des recherches dessus en
-    prenant en compte une distance maximale d'erreur définie dans l'input.
+    prenant en compte une distance maximale d'erreur définie dans l'input. La
+    sortie est en format JSON.
 
 Ce projet permet de réfléchir à des problématiques de la vrai vie, notamment
 comment gérer énormément de données et pouvoir faire des recherches dessus,
 tout en étant efficace, quelles optimisations peut-on faire pour aller plus
 vite, prendre moins d'espace, etc.
 
+*** Compilation ***
+
+Pour compiler ce projet, il suffit de faire ./configue && make
 
 *** Questions ***
+
+  1. Decrivez les choix de design de votre programme.
+
+    Notre programme se décompose en plusieurs parties.
+
+    Premièrement, il lit le le fichier contenant l'ensemble des mots et des
+    fréquences pour construire un Dict, qui est un vecteur d'Entry, chaque Entry
+    possédent un champ pour le mot, et un champ pour la fréquence.
+
+    Ensuite, un TrieBuilder est crée, c'est la première représentation de notre
+    structure de données. Cette implémentation est totalement naïve, c'est un
+    arbre de map. Le principe est de mettre chaque lettre sur une arrête.
+    Au début le TrieBuilder est un simple Trie, puis on le compact pour le
+    transformer en Patricia Trie.
+
+    La prochaine étape, est la sérialisation // FIXME
+
+    Pour la désérialisation // FIXME
+
+    Enfin, pour la recherche, on n'utilise pas de calcul de distance de
+    Damerau-Levenshtei directement, nous avons choisi de propager la recherche
+    avec plusieurs types de recherche :
+    - une pour tester si les deux caractères sont identiques,
+    - une pour tester si il y a une lettre en plus dans le mot cherché,
+    - une pour tester si il y a une lettre en moins,
+    - une pour tester si il y a une substitution,
+    - une pour tester si il y a un swap de lettre
+
+    Chaque résultat est stockée dans une structure de données, puis une fois la
+    recherche terminée, on affiche tout les résultats en format JSON.
+
+  2. Listez l’ensemble des tests effectués sur votre programme (en plus des
+     units tests)
+
+    // FIXME
+
+  3. Avez-vous détecté des cas où la correction par distance ne fonctionnait
+     pas (même avec une distance  élevée) ?
+
+    // FIXME ??? Peut-être quand y a des swap à gogo ?
+    // Genre on test tototo avec ototot ? J'en sais rien :p
+
+  4. Quelle est la structure de données que vous avez implémentée dans votre
+     projet, pourquoi ?
+
+    Dans notre projet, nous avons décidé d'implémenter un Patricia Trie.
+    // FIXME je te laisse bullshit
+
+  5. Proposez un réglage automatique de la distance pour un programme qui prend
+     juste une chaîne de caractères en entrée, donner le processus d’évaluation
+     ainsi que les résultats.
+
+    // FIXME comprend pas la question
+
+  6. Comment comptez vous améliorer les performances de votre programme
+
+    Il est possible d'améliorer les performances de notre programme en travaillant
+    plus en amont, lors de la sérialisation de notre Patricia Trie. En effet, il
+    serait efficace de pouvoir merger des branches qui se termineraient de la
+    même façon, et ainsi prendre moins d'espace en mémoire.
+    // FIXME t'as des idées ?

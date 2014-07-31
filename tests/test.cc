@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+
+#include "../src/search.cc" // yes ?
 /*
  * we suppose that the test are only run by the makefile and
  * from the project root directory

@@ -205,7 +205,7 @@ void Search(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff
   {
     SearchOk(results, trie, trieElt, word, buff, err, limit, stack);
     // SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
-    // SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
     // SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
   }
 }

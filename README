@@ -1,0 +1,18 @@
+*** Sujet ***
+
+ Le but du sujet est de construire un outil en ligne de commande de correction
+ orthographique rapide et stable en utilisant une distance de Damerau-Levenshtein.
+ Lorsqu'on compile le projet, on obtient deux éxécutables :
+
+  - TextMiningCompiler : sert à dumper un dictionnaire à partir d'un
+    fichier rempli de lignes contenant chacune un mot ainsi que sa fréquence.
+  - TextMiningApp : charge un dictionnaire et fait des recherches dessus en
+    prenant en compte une distance maximale d'erreur définie dans l'input.
+
+Ce projet permet de réfléchir à des problématiques de la vrai vie, notamment
+comment gérer énormément de données et pouvoir faire des recherches dessus,
+tout en étant efficace, quelles optimisations peut-on faire pour aller plus
+vite, prendre moins d'espace, etc.
+
+
+*** Questions ***

@@ -30,11 +30,6 @@ char* TrieElement::GetStr()
   return Trie::_strBase_ + _strId;
 }
 
-char *TrieElement::GetStr()
-{
-  NOT_IMPLEMENTED();
-}
-
 Trie::Trie(std::string serializedPath)
 {
   NOT_IMPLEMENTED();

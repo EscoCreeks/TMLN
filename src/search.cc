@@ -14,7 +14,6 @@ inline bool ResultElement::operator<(const ResultElement& res) const
 
 inline bool ResultElementVectorized::operator<(const ResultElementVectorized& res) const
 {
-  std::cerr << "damming" << std::endl;
   return freq > res.freq && strcmp(str,res.str) >= 0;
 }
 
@@ -133,9 +132,11 @@ void PrintResults<std::priority_queue<ResultElement>>(std::priority_queue<Result
     std::cout << "{\"word\":\"" << elt.str
               << "\",\"freq\":" << elt.freq
               << ",\"distance\":" << static_cast<int>(elt.dist)
-              << "},";
+              << "}";
     delete[] elt.str;
     results.pop();
+    if (!results.empty())
+      std::cout << ",";
   }
 }
 

@@ -3,9 +3,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <search.hh>
+#include "search.cc"
 
 int main(int argc, char** argv)
 {
@@ -36,7 +34,7 @@ int main(int argc, char** argv)
     if (strcmp(tok, "approx") == 0){
       std::cout << "[";
       int dist_max = atoi(strtok(NULL, " "));
-      StartSearch(trie, strtok(NULL, "\n"), dist_max);
+      StartSearch<std::priority_queue<ResultElement>>(trie, strtok(NULL, "\n"), dist_max);
       std::cout << "]" << std::endl;
     }
   }

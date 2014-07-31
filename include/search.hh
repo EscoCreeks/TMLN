@@ -12,24 +12,31 @@ struct ResultElement
   char dist;
 };
 
+template<typename T1>
 void StartSearch(Trie& trie, char* word, int max_err);
 
-void Search(std::priority_queue<ResultElement>& results, Trie trie,
-            TrieElement& trieElt, char* word, char* temp,
+template<typename T1>
+void Search(T1& results, Trie trie,
+            TrieElement& trieElt,  char* word, char* temp,
             int err, int limit, char** stack);
-void SearchOk(std::priority_queue<ResultElement>& results, Trie trie,
+template<typename T1>
+void SearchOk(T1& results, Trie trie,
               TrieElement& trieElt, char* word, char* temp,
               int err, int limit, char** stack);
-void SearchInsert(std::priority_queue<ResultElement>& results, Trie trie,
+template<typename T1>
+void SearchInsert(T1& results, Trie trie,
                   TrieElement& trieElt, char* word, char* temp,
                   int err, int limit, char** stack);
-void SearchRemove(std::priority_queue<ResultElement>& results, Trie trie,
+template<typename T1>
+void SearchRemove(T1& results, Trie trie,
                   TrieElement& trieElt, char* word, char* temp,
                   int err, int limit, char** stack);
-void SearchSubstitute(std::priority_queue<ResultElement>& results, Trie trie,
+template<typename T1>
+void SearchSubstitute(T1& results, Trie trie,
                   TrieElement& trieElt, char* word, char* temp,
                   int err, int limit, char** stack);
-void SearchSwap(std::priority_queue<ResultElement>& results, Trie trie,
+template<typename T1>
+void SearchSwap(T1& results, Trie trie,
                 TrieElement& trieElt, char* word, char* temp,
                 int err, int limit, char** stack);
 

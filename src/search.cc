@@ -230,8 +230,10 @@ void SearchRemove(T1& results, Trie trie, TrieElement& trieElt, char* word, char
 }
 
 template<typename T1>
-void SearchSubstitute(T1& results, Trie trie, TrieElement& trieElt, char* word, char* temp, int err, int limit, char** stack)
+void SearchSubstitute(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
+  if (*word != '\0')
+    Search(results, trie, trieElt, word+1, buff, err+1, limit, stack);
 }
 
 template<typename T1>

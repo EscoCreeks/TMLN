@@ -55,7 +55,7 @@ struct TrieNode
 
 struct searchRes {
   int freq;
-  unsigned char error;
+  unsigned char distance;
   char* word;
 };
 

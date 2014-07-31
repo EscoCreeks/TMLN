@@ -14,7 +14,7 @@ inline bool ResultElementVectorized::operator<(const ResultElementVectorized& re
 template <typename T1>
 void AddResult(T1& results, char** stack, TrieElement& trieElt, int err)
 {
-  std::cout << "COUCOU, JE NE SUIS PAS SPECIALISEE" << std::endl;
+  std::cerr << "COUCOU, JE NE SUIS PAS SPECIALISEE" << std::endl;
 }
 
 template <>

@@ -237,7 +237,7 @@ void SearchOk(T1& results, Trie trie, TrieElement& trieElt, char* word, char* bu
 template<typename T1>
 void SearchInsert(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
-  if (*word != '\0' && *buff != '\0' && *word != *buff)
+  if (*buff != '\0' && *word != *buff)
     Search(results, trie, trieElt, word, buff+1, err+1, limit, stack);
 }
 

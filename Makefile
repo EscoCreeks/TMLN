@@ -43,7 +43,7 @@ bench: ${Out}/my.dict ref build/tests/output
 test: build/tests/test.xml
 
 build/tests/test.xml:  ${Out}/my.dict build/test ${CBIN} ${ABIN}
-	$< --gtest_output=xml:$@  || true
+	build/test --gtest_output=xml:$@  || true
 
 ${Out}:
 	mkdir $@

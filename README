@@ -66,7 +66,15 @@ Pour compiler ce projet, il suffit de faire ./configue && make
      projet, pourquoi ?
 
     Dans notre projet, nous avons décidé d'implémenter un Patricia Trie.
-    // FIXME je te laisse bullshit
+    Un Patricia Trie est un trie optimisé pour prendre moins d'espace. Le
+    but est de compacter les préfixes d'un trie, pour avoir moins de noeuds
+    représentés. Ceci peut être efficace si par exemple on travaille avec des
+    urls : au lieu d'avoir plein d'arrêtes pour h, t, t, p, :, /, /, on se
+    retrouve avec une seule arrête contenant http://. Le gain en espace est
+    très satisfaisant. Il possède aussi les avantages du Trie, qui tire son
+    nom de "retrieval", qui signifie que la structure de donnée a été pensée
+    pour être optimal pour la recherche d'information sur une base de données
+    tirées d'une multitudes de sources différentes.
 
   5. Proposez un réglage automatique de la distance pour un programme qui prend
      juste une chaîne de caractères en entrée, donner le processus d’évaluation

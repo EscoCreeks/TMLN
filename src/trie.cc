@@ -168,3 +168,9 @@ bool CheckDistance(char* querry, char* test, int* error)
   }
   return (*error) >= 0;
 }
+
+struct searchRes** Trie::SearchQuerry(char* querry, int error)
+{
+  struct searchRes* json = (struct searchRes*)malloc(3*sizeof(struct searchRes));
+
+}

@@ -43,7 +43,7 @@ depend: ${CDEPS}
 bench: ${Out}/my.dict ref build/tests/output
 	./script/bench.sh tests/input/*.test
 
-test: build/tests/test.xml
+test: ${Out} build/tests/test.xml
 
 build/tests/test.xml:  ${Out}/my.dict build/test ${CBIN} ${ABIN}
 	build/test --gtest_output=xml:$@  || true

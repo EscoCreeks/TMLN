@@ -228,8 +228,8 @@ TEST_F(Serialize, Leaf)
   ASSERT_EQ(t.GetElementCount(), 2);
   ASSERT_EQ(t.GetElements()[0].GetTrie().GetElementCount(),2);
   ASSERT_EQ(t.GetElements()[0].IsLeaf(),false);
-  ASSERT_EQ(t.GetElements()[0].GetTrie().GetElements()[0].IsLeaf(),true);
-  ASSERT_EQ(t.GetElements()[0].GetTrie().GetElements()[1].IsLeaf(),true);
+  ASSERT_EQ(t.GetElements()[0].GetTrie().GetElements()[0].IsLeaf(),false);
+  ASSERT_EQ(t.GetElements()[0].GetTrie().GetElements()[1].IsLeaf(),false);
 }
 
 class Searching : public testing::Test

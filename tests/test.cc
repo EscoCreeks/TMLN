@@ -59,12 +59,6 @@ TEST_F(Base, SimpleBuild)
   tb.Build();
 }
 
-TEST_F(Base, LockedBuild)
-{
-  LockedTrieBuilder tb(dict);
-  tb.Build();
-}
-
 class Compare : public testing::Test
 {
 protected:
@@ -96,12 +90,6 @@ TEST_F(Compare, SimpleBuild)
   TestTrie(refTrie, tb.GetRoot());
 }
 
-TEST_F(Compare, TbbPBuild)
-{
-  LocklessTrieBuilder tb(dict);
-  tb.Build();
-  TestTrie(refTrie, tb.GetRoot());
-}
 
 class CompareCompact : public testing::Test
 {
@@ -131,22 +119,6 @@ private:
 TEST_F(CompareCompact, SimpleCompact)
 {
   SimpleTrieBuilder tb(dict);
-  tb.Build();
-  tb.Compact();
-}
-
-
-
-TEST_F(CompareCompact, LockedCompact)
-{
-  LockedTrieBuilder tb(dict);
-  tb.Build();
-  tb.Compact();
-}
-
-TEST_F(CompareCompact, TbbPCompact)
-{
-  LocklessTrieBuilder tb(dict);
   tb.Build();
   tb.Compact();
 }

@@ -3,7 +3,6 @@
 
 #include <common.hh>
 #include <dict.hh>
-#include <tbb/concurrent_hash_map.h>
 
 class Trie;
 
@@ -58,8 +57,5 @@ struct searchRes {
   char* word;
 };
 
-#include <totrash.hh>
 #include <simpleTrie.hh>
-#include <locklessTrie.hh>
-#include <lockedTrie.hh>
 #endif /* !TRIE_HH */

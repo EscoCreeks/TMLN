@@ -34,14 +34,10 @@ int main(int argc, char** argv)
   {
     char *tok = strtok(inputLine, " ");
     if (strcmp(tok, "approx") == 0){
-#if 1
-      trie.SearchQuerry(strtok(NULL, " "), atoi(strtok(NULL, " ")));
-#else
       std::cout << "[";
       int dist_max = atoi(strtok(NULL, " "));
       StartSearch(trie, strtok(NULL, "\n"), dist_max);
       std::cout << "]" << std::endl;
-#endif
     }
   }
   if (ferror(stdin))

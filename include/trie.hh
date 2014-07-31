@@ -33,7 +33,6 @@ public:
 
   int GetElementCount();
   TrieElement* GetElements();
-  struct searchRes** SearchQuerry(char* querry, int error);
   static char* _strBase_;
 private:
   void* _raw;

@@ -26,6 +26,9 @@ void SearchInsert(std::priority_queue<ResultElement>& results,
 void SearchRemove(std::priority_queue<ResultElement>& results,
                   TrieElement& trieElt, char* word, char* temp,
                   int err, int limit, char** stack);
+void SearchSubstitute(std::priority_queue<ResultElement>& results,
+                  TrieElement& trieElt, char* word, char* temp,
+                  int err, int limit, char** stack);
 void SearchSwap(std::priority_queue<ResultElement>& results,
                 TrieElement& trieElt, char* word, char* temp,
                 int err, int limit, char** stack);

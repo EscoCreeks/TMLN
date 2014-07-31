@@ -282,6 +282,7 @@ protected:
   std::vector<Entry> dict;
   const std::string dictPath = "tests/dicts/remove.txt";
 };
+
 void trieprinter(Trie t)
 {
   static int index  = 0;
@@ -294,9 +295,9 @@ void trieprinter(Trie t)
     std::cerr << std::endl;
   }
 }
+
 TEST_F(Searching, Remove)
 {
-
   char* word = "abcdefg";
   char* buff = "";
   char** stack = new char*[1024];

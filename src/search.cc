@@ -113,6 +113,10 @@ void SearchRemove(std::priority_queue<ResultElement>& results, TrieElement& trie
     Search(results, trieElt, word+1, buff, err+1, limit, stack);
 }
 
+void SearchSubstitute(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* temp, int err, int limit, char** stack)
+{
+}
+
 void SearchSwap(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
 }

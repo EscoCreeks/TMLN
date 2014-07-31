@@ -243,8 +243,8 @@ void Search(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff
     SearchOk(results, trie, trieElt, word, buff, err, limit, stack);
     SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
     SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
-    SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
     SearchSubstitute(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
   }
 }
 
@@ -265,7 +265,7 @@ void SearchInsert(T1& results, Trie trie, TrieElement& trieElt, char* word, char
 template<typename T1>
 void SearchRemove(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
-  if (*word != '\0' && *buff != '\0' && *word != *buff)
+  if (*word != '\0' && *word != *buff)
     Search(results, trie, trieElt, word+1, buff, err+1, limit, stack);
 }
 

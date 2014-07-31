@@ -355,6 +355,23 @@ TEST_F(Searching, Ins)
   delete[] stack;
 }
 
+TEST_F(Searching, Rem)
+{
+  char word[] = "blo";
+  char* buff = "";
+  char** stack = new char*[1024];
+  stack[0] = nullptr;
+  std::priority_queue<ResultElement> results;
+  for (int i = 0; i < trie->GetElementCount(); ++i)
+  {
+    stack[1] = trie->GetElements()[i].GetStr();
+    Search(results, *trie, trie->GetElements()[i], word, stack[1], 0, 1, stack+1);
+  }
+  ASSERT_EQ(results.size(), 1);
+  //PrintResults(results);
+  delete[] stack;
+}
+
 TEST_F(Searching, Double)
 {
   char word[] = "bloob";

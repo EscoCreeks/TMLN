@@ -35,9 +35,28 @@ Pour compiler ce projet, il suffit de faire ./configue && make
     Au début le TrieBuilder est un simple Trie, puis on le compact pour le
     transformer en Patricia Trie.
 
-    La prochaine étape, est la sérialisation // FIXME
+    La prochaine étape, est la sérialisation:
+    Pour cela on a commence par penser a la deserialization.
+    Il nous fallait un structure rapide a deserializser, qui support des acces rapides, et de preference le random access
+    On a donc desider de transforme la representation intermediaire, en un memory block contant:
+    Des Trie:
+        - Le nombre de TrieElemnt 
+        - Un array de TrieElement
+    Les TrieElement vont servir pour faire la transition entre les differents Trie.
+    TrieElement:
+        - Offset vers un aute Trie en partant de l'adresse du TrieElement
+        - Information concernant l'arc: label, s'il est terminal, la frequance du mot cumuler
 
-    Pour la désérialisation // FIXME
+                                  __________________
+                                 /                  V
+   ---------------------------------------------------------------------------
+   | TrieElement Count | TrieElement|TrieElement|...| TrieElement Count|....
+   ---------------------------------------------------------------------------
+                                             \_________________________......
+
+    Avec une tel structure on peut se servir de mmap pour mapper le datablock directement en memoire, sans avec a se
+    preocuper de la copie. Dans l'idee, on a choisi de faviser les pagefault et eviter de copier tout le fichier en
+    memoire.
 
     Enfin, pour la recherche, on n'utilise pas de calcul de distance de
     Damerau-Levenshtei directement, nous avons choisi de propager la recherche
@@ -54,13 +73,20 @@ Pour compiler ce projet, il suffit de faire ./configue && make
   2. Listez l’ensemble des tests effectués sur votre programme (en plus des
      units tests)
 
-    // FIXME
+     $ make test
+     on test la construction
+     le resultat de la serialisation
+     et les differentes etape de la recheche sous forme de test unitaire, ou la majeure partie des tests decoulent des
+     problemes rencontre
+
+     $ ./configure && make bench
+     On test aussi directement contre la ref, histoire de s'assurer du bon fonctionnement de notre programme comparer a la ref
 
   3. Avez-vous détecté des cas où la correction par distance ne fonctionnait
      pas (même avec une distance  élevée) ?
 
-    // FIXME ??? Peut-être quand y a des swap à gogo ?
-    // Genre on test tototo avec ototot ? J'en sais rien :p
+     La correction par distance omet de considerer le contexte et est limite a un dictionnaire pre-existant.
+     Et ne fait pas la difference entre les differents type de mots (ex: .net)
 
   4. Quelle est la structure de données que vous avez implémentée dans votre
      projet, pourquoi ?

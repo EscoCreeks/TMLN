@@ -306,7 +306,7 @@ TEST_F(Searching, Remove)
   for (int i = 0; i < trie->GetElementCount(); ++i)
   {
     stack[1] = trie->GetElements()[i].GetStr();
-    Search(results, trie->GetElements()[i], word, stack[1], 0, 1, stack+1);
+    Search(results, *trie, trie->GetElements()[i], word, stack[1], 0, 1, stack+1);
   }
   ASSERT_EQ(results.size(), 3);
   //PrintResults(results);

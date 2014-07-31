@@ -58,29 +58,29 @@ void StartSearch(Trie& trie, char* word, int max_err)
   for (int i = 0; i < trie.GetElementCount(); ++i)
   {
     stack[1] = trie.GetElements()[i].GetStr();
-    Search(results, trie.GetElements()[i], word, stack[1], 0, max_err, stack+1);
+    Search(results, trie, trie.GetElements()[i], word, stack[1], 0, max_err, stack+1);
   }
   PrintResults(results);
   delete[] stack;
 }
 
-void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+void Search(std::priority_queue<ResultElement>& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
   if (err > limit)
     return;
   if (*buff == '\0' && !trieElt.IsLeaf())
   {
-    Trie trie = trieElt.GetTrie();
+    trie = trieElt.GetTrie();
     TrieElement* trieElts = trie.GetElements();
     for (int i = 0; i < trie.GetElementCount(); ++i)
     {
       buff = trieElts[i].GetStr();
       ++stack;
       *stack = buff;
-      SearchOk(results, trieElts[i], word, buff, err, limit, stack);
-      SearchInsert(results, trieElts[i], word, buff, err, limit, stack);
-      SearchRemove(results, trieElts[i], word, buff, err, limit, stack);
-      SearchSwap(results, trieElts[i], word, buff, err, limit, stack);
+      SearchOk(results, trie, trieElts[i], word, buff, err, limit, stack);
+      SearchInsert(results, trie, trieElts[i], word, buff, err, limit, stack);
+      SearchRemove(results, trie, trieElts[i], word, buff, err, limit, stack);
+      SearchSwap(results, trie, trieElts[i], word, buff, err, limit, stack);
       --stack;
     }
     if (trieElt.IsLeaf())
@@ -88,35 +88,35 @@ void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, c
   }
   else
   {
-    SearchOk(results, trieElt, word, buff, err, limit, stack);
-    SearchInsert(results, trieElt, word, buff, err, limit, stack);
-    SearchRemove(results, trieElt, word, buff, err, limit, stack);
-    SearchSwap(results, trieElt, word, buff, err, limit, stack);
+    SearchOk(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
   }
 }
 
-void SearchOk(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+void SearchOk(std::priority_queue<ResultElement>& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
   if (*word != '\0' && *buff != '\0' && *buff == *word)
-    Search(results, trieElt, word+1, buff+1, err, limit, stack);
+    Search(results, trie, trieElt, word+1, buff+1, err, limit, stack);
   if (*buff == '\0' && *word == '\0' && trieElt.IsOutNode())
     AddResult(results, stack, trieElt, err);
 }
 
-void SearchInsert(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+void SearchInsert(std::priority_queue<ResultElement>& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
 }
 
-void SearchRemove(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+void SearchRemove(std::priority_queue<ResultElement>& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
   if (*word != '\0')
-    Search(results, trieElt, word+1, buff, err+1, limit, stack);
+    Search(results, trie, trieElt, word+1, buff, err+1, limit, stack);
 }
 
-void SearchSubstitute(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* temp, int err, int limit, char** stack)
+void SearchSubstitute(std::priority_queue<ResultElement>& results, Trie trie, TrieElement& trieElt, char* word, char* temp, int err, int limit, char** stack)
 {
 }
 
-void SearchSwap(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
+void SearchSwap(std::priority_queue<ResultElement>& results,  Trie trie,TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
 }

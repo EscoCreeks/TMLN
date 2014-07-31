@@ -59,6 +59,7 @@ void* TrieWriter(void* buff, SimpleTrieNode* root, std::map<std::string, int>& s
   }
   // split
   void* buffEnd = &node->trieElt[i];
+  void* oldBuff = buffEnd;
   i = 0;
   for (auto edge : root->edges)
   {
@@ -66,6 +67,8 @@ void* TrieWriter(void* buff, SimpleTrieNode* root, std::map<std::string, int>& s
     assert(offset > 0);
     node->trieElt[i].SetTrieOffset(offset);
     buffEnd = TrieWriter(buffEnd, edge.second, strmap);
+    if (buffEnd == oldBuff)
+      node->trieElt[i].SetTrieOffset(0);
     ++i;
   }
   return buffEnd;

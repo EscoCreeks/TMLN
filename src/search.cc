@@ -3,7 +3,7 @@
 
 bool ResultElement::operator<(const ResultElement& res) const
 {
-  return dist < res.dist && freq > res.freq;
+  return dist < res.dist && freq > res.freq && strcmp(str,res.str) >= 0;
 }
 
 void AddResult(std::priority_queue<ResultElement>& results, char** stack, TrieElement& trieElt, int err)
@@ -22,13 +22,18 @@ void AddResult(std::priority_queue<ResultElement>& results, char** stack, TrieEl
     --stack;
   }
   str = new char[buffsize + 1];
+  str[0] = '\0';
   while (count)
   {
     ++stack;
     strcat(str, *stack);
     --count;
   }
+#ifndef NDEBUG
+  std::cerr << "found " << str << std::endl;
+#endif
   results.emplace(str, trieElt.GetFreq(), err);
+
 }
 
 void PrintResults(std::priority_queue<ResultElement>& results)
@@ -62,7 +67,9 @@ void StartSearch(Trie& trie, char* word, int max_err)
 
 void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
-  if (*buff == '\0')
+  if (err > limit)
+    return;
+  if (*buff == '\0' && !trieElt.IsLeaf())
   {
     Trie trie = trieElt.GetTrie();
     TrieElement* trieElts = trie.GetElements();
@@ -103,6 +110,8 @@ void SearchInsert(std::priority_queue<ResultElement>& results, TrieElement& trie
 
 void SearchRemove(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
+  if (*word != '\0')
+    Search(results, trieElt, ++word, buff, err+1, limit, stack);
 }
 
 void SearchSwap(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)

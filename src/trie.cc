@@ -1,12 +1,13 @@
 #include <trie.hh>
 
 TrieElement::TrieElement(int strId, int freq)
-  : _strId(strId), _freq(freq)
+  : _strId(strId), _freq(freq), _trieOffset(0)
 {
 }
 
 void TrieElement::SetTrieOffset(int off)
 {
+  assert(off >= 0);
   _trieOffset = off;
 }
 

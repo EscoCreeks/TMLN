@@ -2,6 +2,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 int main(int argc, char** argv)
 {
@@ -21,5 +24,18 @@ int main(int argc, char** argv)
   void* buff = strbuff + strbuffSize;
 
   Trie trie(strbuff, buff);
-  
+
+  int sizeMax = 4096;
+  char inputLine[sizeMax];
+  char *result;
+
+  while((result = fgets(inputLine, sizeMax, stdin )) != NULL)
+  {
+    char *tok = strtok(inputLine, " ");
+    if (strcmp(tok, "approx")){
+      trie.SearchQuerry(strtok(NULL, " "), atoi(strtok(NULL, " ")));
+    }
+  }
+  if (ferror(stdin))
+    perror("Error reading stdin.");
 }

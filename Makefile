@@ -57,7 +57,7 @@ ${Out}/ref.dict: ${RefCompiler} build
 ${Out}/my.dict: ${CBIN} build
 	./$< assignment/words.txt $@
 
-build/test: tests/test.cc build ${CBIN} external/gtest/lib/libgtest.a
+build/test: tests/test.cc build ${CBIN} ${ABIN} external/gtest/lib/libgtest.a
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -o $@ $< ${COBJS} -lgtest -lpthread
 
 external/gtest/lib/libgtest.a:

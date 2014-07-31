@@ -262,8 +262,23 @@ class Searching : public testing::Test
 {
   void SetUp()
   {
+    std::ifstream dictStream(dictPath);
+    ASSERT_TRUE(dictStream.is_open());
+    dict = ParseDict(dictStream);
+    dictStream.close();
+    EXPECT_FALSE(dict.empty());
+    RecordProperty("EntryCount", dict.size());
+    SimpleTrieBuilder tb(dict);
+    tb.Build();
+    tb.Compact();
+    trie = new Trie(tb.Serialize());
+  }
+  void TearDown()
+  {
+    delete trie;
   }
 protected:
+  Trie* trie;
   std::vector<Entry> dict;
   const std::string dictPath = "tests/dicts/remove.txt";
 };
@@ -281,27 +296,16 @@ void trieprinter(Trie t)
 }
 TEST_F(Searching, Remove)
 {
-  std::ifstream dictStream(dictPath);
-  ASSERT_TRUE(dictStream.is_open());
-  dict = ParseDict(dictStream);
-  dictStream.close();
-  EXPECT_FALSE(dict.empty());
-  RecordProperty("EntryCount", dict.size());
-  SimpleTrieBuilder tb(dict);
-  tb.Build();
-  tb.Compact();
-  Trie trie = tb.Serialize();
 
-  trieprinter(trie);
   char* word = "abcdefg";
   char* buff = "";
   char** stack = new char*[1024];
   stack[0] = nullptr;
   std::priority_queue<ResultElement> results;
-  for (int i = 0; i < trie.GetElementCount(); ++i)
+  for (int i = 0; i < trie->GetElementCount(); ++i)
   {
-    stack[1] = trie.GetElements()[i].GetStr();
-    Search(results, trie.GetElements()[i], word, stack[1], 0, 1, stack+1);
+    stack[1] = trie->GetElements()[i].GetStr();
+    Search(results, trie->GetElements()[i], word, stack[1], 0, 1, stack+1);
   }
   ASSERT_EQ(results.size(), 3);
   //PrintResults(results);

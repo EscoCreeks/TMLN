@@ -33,7 +33,6 @@ void AddResult(std::priority_queue<ResultElement>& results, char** stack, TrieEl
   std::cerr << "found " << str << std::endl;
 #endif
   results.emplace(str, trieElt.GetFreq(), err);
-
 }
 
 void PrintResults(std::priority_queue<ResultElement>& results)
@@ -98,8 +97,8 @@ void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, c
 
 void SearchOk(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
-  if (*buff != '\0' && *buff == *word)
-    Search(results, trieElt, ++word, ++buff, err, limit, stack);
+  if (*word != '\0' && *buff != '\0' && *buff == *word)
+    Search(results, trieElt, word+1, buff+1, err, limit, stack);
   if (*buff == '\0' && *word == '\0' && trieElt.IsOutNode())
     AddResult(results, stack, trieElt, err);
 }
@@ -111,7 +110,7 @@ void SearchInsert(std::priority_queue<ResultElement>& results, TrieElement& trie
 void SearchRemove(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
   if (*word != '\0')
-    Search(results, trieElt, ++word, buff, err+1, limit, stack);
+    Search(results, trieElt, word+1, buff, err+1, limit, stack);
 }
 
 void SearchSwap(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)

@@ -8,7 +8,7 @@ ABIN = TextMiningApp
 CSRC = src/dict.cc src/trie.cc src/simpletriebuilder.cc
 ASRC = src/dict.cc src/trie.cc
 
-CXXFLAGS = -I include -std=c++11 -fstack-protector -Wno-write-strings -g
+CXXFLAGS = -I include -std=c++11 -fstack-protector -Wno-write-strings -O3 -DNDEBUG -Wno-pointer-arith
 LDFLAGS = -ltbb
 
 COBJS = ${CSRC:.cc=.o}
@@ -19,6 +19,9 @@ ADEPS = ${ASRC:.cc=.deps}
 all:  ${Out} ${CBIN} ${ABIN}
 
 ref: ${Out}/ref.dict
+
+doc:
+	doxygen doc/Doxyfile
 
 ${Out}/${CBIN}: depend ${COBJS} src/main.o
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${COBJS} src/main.o
@@ -65,9 +68,9 @@ external/gtest/lib/libgtest.a:
 	cd external/gtest/lib; 	cmake ..; make
 
 clean:
-	${RM} -rf build ${CBIN} ${COBJS} ${CDEPS} ${ADEPS} ${AOBJS} src/main.o src/appmain.o
+	${RM} -rf build ${CBIN} ${COBJS} ${CDEPS} ${ADEPS} ${AOBJS} src/main.o src/appmain.o doc/html doc/latex
 
-.PHONY: ref bench test
+.PHONY: ref bench test doc
 .PHONY: build/tests/test.xml
 
 -include ${CDEPS} ${ADEPS}

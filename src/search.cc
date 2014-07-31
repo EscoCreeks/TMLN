@@ -14,7 +14,7 @@ inline bool ResultElementVectorized::operator<(const ResultElementVectorized& re
 template <typename T1>
 void AddResult(T1& results, char** stack, TrieElement& trieElt, int err)
 {
-  std::cerr << "COUCOU, JE NE SUIS PAS SPECIALISEE" << std::endl;
+  std::cerr << "Add not specialized" << std::endl;
 }
 
 template <>
@@ -50,6 +50,8 @@ void AddResult<std::priority_queue<ResultElement>>(std::priority_queue<ResultEle
 template <>
 void AddResult<std::vector<std::priority_queue<ResultElementVectorized>>>(std::vector<std::priority_queue<ResultElementVectorized>>& results, char** stack, TrieElement& trieElt, int err)
 {
+  if (results.size() == 0)
+    results = std::vector<std::priority_queue<ResultElementVectorized>>(3, std::priority_queue<ResultElementVectorized>());
   static const int usualSize = 15;
   int count = 0;
   int buffsize = 0;
@@ -80,6 +82,8 @@ void AddResult<std::vector<std::priority_queue<ResultElementVectorized>>>(std::v
 template <>
 void AddResult<std::vector<ResultElement>>(std::vector<ResultElement>& results, char** stack, TrieElement& trieElt, int err)
 {
+  if (results.size() == 0)
+    results = std::vector<ResultElement>();
   static const int usualSize = 15;
   int count = 0;
   int buffsize = 0;
@@ -110,7 +114,7 @@ void AddResult<std::vector<ResultElement>>(std::vector<ResultElement>& results, 
 template <typename T1>
 void PrintResults(T1& results)
 {
-  std::cout << "COUCOU JE NE SUIS PAS SPECIALISEE" << std::endl;
+  std::cout << "Print not specialized" << std::endl;
 }
 
 template<>
@@ -129,13 +133,15 @@ void PrintResults<std::priority_queue<ResultElement>>(std::priority_queue<Result
 }
 
 template<>
-void PrintResults<std::vector<std::priority_queue<ResultElement>>>(std::vector<std::priority_queue<ResultElement>>& results)
+void PrintResults<std::vector<std::priority_queue<ResultElementVectorized>>>(std::vector<std::priority_queue<ResultElementVectorized>>& results)
 {
+  if (results.size() == 0)
+    return;
   for (int i = 0; i < 3; ++i)
   {
     while(!results[i].empty())
     {
-      const ResultElement& elt = results[i].top();
+      const ResultElementVectorized& elt = results[i].top();
       std::cout << "{\"word\":\"" << elt.str
         << "\",\"freq\":" << elt.freq
         << ",\"distance\":" << static_cast<int>(elt.dist)
@@ -154,6 +160,8 @@ bool CompareResultElement(const ResultElement& left, const ResultElement& right)
 template<>
 void PrintResults<std::vector<ResultElement>>(std::vector<ResultElement>& results)
 {
+  if (results.size() == 0)
+    return;
   std::sort(results.begin(), results.end(), CompareResultElement);
   for (auto& elt : results)
   {

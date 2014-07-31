@@ -58,7 +58,7 @@ ${Out}/my.dict: ${CBIN} build
 	./$< assignment/words.txt $@
 
 build/test: tests/test.cc build ${CBIN} ${ABIN} external/gtest/lib/libgtest.a ${AOBJS}
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -o $@ $< ${COBJS} src/search.o  -lgtest -lpthread
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -o $@ $< ${COBJS}  -lgtest -lpthread
 
 external/gtest/lib/libgtest.a:
 	mkdir external/gtest/lib

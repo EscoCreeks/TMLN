@@ -168,7 +168,6 @@ void PrintResults<std::vector<ResultElement>>(std::vector<ResultElement>& result
 template<typename T1>
 void StartSearch(Trie& trie, char* word, int max_err)
 {
-  char* buff = "";
   char** stack = new char*[1024];
   stack[0] = nullptr;
   //std::priority_queue<ResultElement> results;
@@ -187,6 +186,8 @@ void Search(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff
 {
   if (err > limit)
     return;
+  if (*buff == '\0' && *word == '\0' && trieElt.IsOutNode())
+    AddResult(results, stack, trieElt, err);
   if (*buff == '\0' && !trieElt.IsLeaf())
   {
     trie = trieElt.GetTrie();
@@ -196,21 +197,16 @@ void Search(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff
       buff = trieElts[i].GetStr();
       ++stack;
       *stack = buff;
-      SearchOk(results, trie, trieElts[i], word, buff, err, limit, stack);
-      SearchInsert(results, trie, trieElts[i], word, buff, err, limit, stack);
-      SearchRemove(results, trie, trieElts[i], word, buff, err, limit, stack);
-      SearchSwap(results, trie, trieElts[i], word, buff, err, limit, stack);
+      Search(results, trie, trieElts[i], word, buff, err, limit, stack);
       --stack;
     }
-    if (trieElt.IsLeaf())
-        return;
   }
   else
   {
     SearchOk(results, trie, trieElt, word, buff, err, limit, stack);
-    SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
-    SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
-    SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
+    // SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
+    // SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
+    // SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
   }
 }
 
@@ -219,8 +215,6 @@ void SearchOk(T1& results, Trie trie, TrieElement& trieElt, char* word, char* bu
 {
   if (*word != '\0' && *buff != '\0' && *buff == *word)
     Search(results, trie, trieElt, word+1, buff+1, err, limit, stack);
-  if (*buff == '\0' && *word == '\0' && trieElt.IsOutNode())
-    AddResult(results, stack, trieElt, err);
 }
 
 template<typename T1>

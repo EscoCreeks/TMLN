@@ -38,7 +38,8 @@ int main(int argc, char** argv)
       trie.SearchQuerry(strtok(NULL, " "), atoi(strtok(NULL, " ")));
 #else
       std::cout << "[";
-      StartSearch(trie, strtok(NULL, "\n"), atoi(strtok(NULL, " ")));
+      int dist_max = atoi(strtok(NULL, " "));
+      StartSearch(trie, strtok(NULL, "\n"), dist_max);
       std::cout << "]" << std::endl;
 #endif
     }

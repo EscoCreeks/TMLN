@@ -5,10 +5,13 @@ inline bool ResultElement::operator<(const ResultElement& res) const
 {
   if (dist > res.dist)
     return true;
-  if (freq < res.freq)
-    return true;
-  if (strcmp(str,res.str) < 0)
-    return false;
+  if (dist == res.dist)
+  {
+    if (freq < res.freq)
+      return true;
+    if (freq == res.freq)
+      return (strcmp(str,res.str) > 0);
+  }
   return false;
 }
 
@@ -16,10 +19,13 @@ inline bool ResultElementVectorized::operator<(const ResultElementVectorized& re
 {
   if (dist > res.dist)
     return true;
-  if (freq < res.freq)
-    return true;
-  if (strcmp(str,res.str) < 0)
-    return false;
+  if (dist == res.dist)
+  {
+    if (freq < res.freq)
+      return true;
+    if (freq == res.freq)
+      return (strcmp(str,res.str) > 0);
+  }
   return false;
 }
 
@@ -170,10 +176,13 @@ bool CompareResultElement(const ResultElement& left, const ResultElement& right)
 {
   if (left.dist > right.dist)
     return true;
-  if (left.freq < right.freq)
-    return true;
-  if (strcmp(left.str,right.str) < 0)
-    return false;
+  if (left.dist == right.dist)
+  {
+    if (left.freq < right.freq)
+      return true;
+    if (left.freq == right.freq)
+      return (strcmp(left.str,right.str) > 0);
+  }
   return false;
 }
 

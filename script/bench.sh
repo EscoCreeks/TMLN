@@ -2,8 +2,8 @@
 
 REFBIN=assignment/linux64/TextMiningApp
 REFDICT=build/ref.dict
-MYBIN=assignment/linux64/TextMiningApp
-MYDICT=build/ref.dict
+MYBIN=./TextMiningApp
+MYDICT=build/my.dict
 
 if [ $# -lt 1 ]
 then
@@ -20,8 +20,8 @@ until [ $# -eq 0 ]; do
     echo -n "Ref time: ";
     (time -f"time: %e" $REFBIN $REFDICT < $TESTFILE > $REFOUTFILE) 2>&1 | grep time
     echo -n "My time: ";
-    (time -f"time: %e" $MYBIN $REFDICT < $TESTFILE > $MYOUTFILE) 2>&1 | grep time
-    if diff $REFOUTFILE $MYOUTFILE; then
+    (time -f"time: %e" $MYBIN $MYDICT < $TESTFILE > $MYOUTFILE) 2>&1 | grep time
+    if diff $REFOUTFILE $MYOUTFILE > /dev/null; then
         echo PASS
     else
         echo FAIL

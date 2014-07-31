@@ -37,8 +37,8 @@ depend: ${CDEPS}
 %.deps: %.cc
 	${CXX} ${CXXFLAGS} -MM -MT ${<:.cc=.o} $< -o $@
 
-bench: ref build/tests/output
-	./script/bench.sh tests/input/*.tes
+bench: ${Out}/my.dict ref build/tests/output
+	./script/bench.sh tests/input/*.test
 
 test: build/tests/test.xml
 
@@ -52,7 +52,10 @@ build/tests/output: build
 	mkdir -p $@
 
 ${Out}/ref.dict: ${RefCompiler} build
-	$< assignment/words.txt $@
+	./$< assignment/words.txt $@
+
+${Out}/my.dict: ${CBIN} build
+	./$< assignment/words.txt $@
 
 build/test: tests/test.cc build ${CBIN} external/gtest/lib/libgtest.a
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -I external/gtest/include/ -L external/gtest/lib -o $@ $< ${COBJS} -lgtest -lpthread

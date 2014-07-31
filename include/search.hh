@@ -12,6 +12,8 @@ struct ResultElement
   char dist;
 };
 
+void StartSearch(Trie& trie, char* word, int max_err);
+
 void Search(std::priority_queue<ResultElement>& results,
             TrieElement& trieElt, char* word, char* temp,
             int err, int limit, char** stack);

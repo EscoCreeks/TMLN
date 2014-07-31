@@ -24,8 +24,8 @@ void AddResult(std::priority_queue<ResultElement>& results, char** stack, TrieEl
   str = new char[buffsize + 1];
   while (count)
   {
-    strcat(str, *stack);
     ++stack;
+    strcat(str, *stack);
     --count;
   }
   results.emplace(str, trieElt.GetFreq(), err);
@@ -38,7 +38,8 @@ void PrintResults(std::priority_queue<ResultElement>& results)
     const ResultElement& elt = results.top();
     std::cout << "{\"word\":\"" << elt.str
               << "\",\"freq\":" << elt.freq
-              << ",\"distance\":" << elt.dist;
+              << ",\"distance\":" << static_cast<int>(elt.dist)
+              << "}";
     results.pop();
   }
 }
@@ -47,9 +48,13 @@ void StartSearch(Trie& trie, char* word, int max_err)
 {
   char* buff = "";
   char** stack = new char*[1024];
+  stack[0] = nullptr;
   std::priority_queue<ResultElement> results;
   for (int i = 0; i < trie.GetElementCount(); ++i)
-    Search(results, trie.GetElements()[i], word, buff, 0, max_err, stack);
+  {
+    stack[1] = trie.GetElements()[i].GetStr();
+    Search(results, trie.GetElements()[i], word, stack[1], 0, max_err, stack+1);
+  }
   PrintResults(results);
 }
 
@@ -70,6 +75,8 @@ void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, c
       SearchSwap(results, trieElts[i], word, buff, err, limit, stack);
       --stack;
     }
+    if (trieElt.IsLeaf())
+        return;
   }
   else
   {

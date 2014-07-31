@@ -15,7 +15,7 @@ public:
   Trie GetTrie();
   int GetFreq();
   bool IsOutNode();
-
+  bool IsLeaf();
   void SetTrieOffset(int off);
 private:
   int _strId;

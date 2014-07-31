@@ -30,6 +30,11 @@ char* TrieElement::GetStr()
   return Trie::_strBase_ + _strId;
 }
 
+bool TrieElement::IsLeaf()
+{
+  return _trieOffset == 0;
+}
+
 Trie::Trie(std::string serializedPath)
 {
   NOT_IMPLEMENTED();

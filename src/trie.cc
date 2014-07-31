@@ -25,6 +25,10 @@ bool TrieElement::IsOutNode()
 {
   return _freq != 0;
 }
+char* TrieElement::GetStr()
+{
+  return Trie::_strBase_ + _strId;
+}
 
 Trie::Trie(std::string serializedPath)
 {

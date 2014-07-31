@@ -1,4 +1,4 @@
-mammal 0
-mama 0
-mamout 0
-bite 0
+mammal 1
+mama 2
+mamout 3
+bite 4

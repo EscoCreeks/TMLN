@@ -18,7 +18,6 @@ public:
 
   void SetTrieOffset(int off);
 private:
-  static char* __base;
   int _strId;
   int _trieOffset;
   int _freq;
@@ -35,8 +34,8 @@ public:
   int GetElementCount();
   TrieElement* GetElements();
   struct searchRes** SearchQuerry(char* querry, int error);
-private:
   static char* _strBase_;
+private:
   void* _raw;
 };
 

@@ -28,7 +28,7 @@ ${CBIN}: ${Out}/${CBIN}
 
 ${Out}/${ABIN}: ${AOBJS} src/appmain.o
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -o $@ ${AOBJS} src/appmain.o
-
+src/appmain.o: src/search.cc
 ${ABIN}: ${Out}/${ABIN}
 	cp $< $@
 

@@ -3,11 +3,18 @@
 
 inline bool ResultElement::operator<(const ResultElement& res) const
 {
-  return dist < res.dist && freq > res.freq && strcmp(str,res.str) >= 0;
+  if (dist > res.dist)
+    return true;
+  if (freq < res.freq)
+    return true;
+  if (strcmp(str,res.str) < 0)
+    return false;
+  return false;
 }
 
 inline bool ResultElementVectorized::operator<(const ResultElementVectorized& res) const
 {
+  std::cerr << "damming" << std::endl;
   return freq > res.freq && strcmp(str,res.str) >= 0;
 }
 
@@ -42,7 +49,7 @@ void AddResult<std::priority_queue<ResultElement>>(std::priority_queue<ResultEle
     --count;
   }
 #ifndef NDEBUG
-  std::cerr << "found " << str << std::endl;
+  std::cerr << "found pq " << str << std::endl;
 #endif
   results.emplace(str, trieElt.GetFreq(), err);
 }
@@ -74,7 +81,7 @@ void AddResult<std::vector<std::priority_queue<ResultElementVectorized>>>(std::v
     --count;
   }
 #ifndef NDEBUG
-  std::cerr << "found " << str << std::endl;
+  std::cerr << "found vpq" << str << std::endl;
 #endif
   results[err].emplace(str, trieElt.GetFreq(), err);
 }
@@ -106,7 +113,7 @@ void AddResult<std::vector<ResultElement>>(std::vector<ResultElement>& results, 
     --count;
   }
 #ifndef NDEBUG
-  std::cerr << "found " << str << std::endl;
+  std::cerr << "found v" << str << std::endl;
 #endif
   results.emplace_back(str, trieElt.GetFreq(), err);
 }
@@ -126,7 +133,7 @@ void PrintResults<std::priority_queue<ResultElement>>(std::priority_queue<Result
     std::cout << "{\"word\":\"" << elt.str
               << "\",\"freq\":" << elt.freq
               << ",\"distance\":" << static_cast<int>(elt.dist)
-              << "}";
+              << "},";
     delete[] elt.str;
     results.pop();
   }
@@ -212,9 +219,9 @@ void Search(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff
   else
   {
     SearchOk(results, trie, trieElt, word, buff, err, limit, stack);
-    // SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchInsert(results, trie, trieElt, word, buff, err, limit, stack);
     SearchRemove(results, trie, trieElt, word, buff, err, limit, stack);
-    // SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
+    SearchSwap(results, trie, trieElt, word, buff, err, limit, stack);
     SearchSubstitute(results, trie, trieElt, word, buff, err, limit, stack);
   }
 }
@@ -236,7 +243,7 @@ void SearchInsert(T1& results, Trie trie, TrieElement& trieElt, char* word, char
 template<typename T1>
 void SearchRemove(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
-  if (*word != '\0')
+  if (*word != '\0' && *buff != '\0' && *word != *buff)
     Search(results, trie, trieElt, word+1, buff, err+1, limit, stack);
 }
 
@@ -250,4 +257,10 @@ void SearchSubstitute(T1& results, Trie trie, TrieElement& trieElt, char* word, 
 template<typename T1>
 void SearchSwap(T1& results, Trie trie, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)
 {
+  if (*word != '\0' && *(word+1) != '\0')
+  {
+    std::swap(*word, *(word+1));
+    Search(results, trie, trieElt, word, buff, err+1, limit, stack);
+    std::swap(*word, *(word+1));
+  }
 }

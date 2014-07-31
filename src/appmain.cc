@@ -21,4 +21,5 @@ int main(int argc, char** argv)
   void* buff = strbuff + strbuffSize;
 
   Trie trie(strbuff, buff);
+  
 }

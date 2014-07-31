@@ -14,7 +14,13 @@ inline bool ResultElement::operator<(const ResultElement& res) const
 
 inline bool ResultElementVectorized::operator<(const ResultElementVectorized& res) const
 {
-  return freq > res.freq && strcmp(str,res.str) >= 0;
+  if (dist > res.dist)
+    return true;
+  if (freq < res.freq)
+    return true;
+  if (strcmp(str,res.str) < 0)
+    return false;
+  return false;
 }
 
 template <typename T1>
@@ -162,7 +168,13 @@ void PrintResults<std::vector<std::priority_queue<ResultElementVectorized>>>(std
 
 bool CompareResultElement(const ResultElement& left, const ResultElement& right)
 {
-  return left.dist < right.dist && left.freq > right.freq && strcmp(left.str,right.str) >= 0;
+  if (left.dist > right.dist)
+    return true;
+  if (left.freq < right.freq)
+    return true;
+  if (strcmp(left.str,right.str) < 0)
+    return false;
+  return false;
 }
 
 template<>

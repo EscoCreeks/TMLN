@@ -40,6 +40,7 @@ void PrintResults(std::priority_queue<ResultElement>& results)
               << "\",\"freq\":" << elt.freq
               << ",\"distance\":" << static_cast<int>(elt.dist)
               << "}";
+    delete[] elt.str;
     results.pop();
   }
 }
@@ -56,6 +57,7 @@ void StartSearch(Trie& trie, char* word, int max_err)
     Search(results, trie.GetElements()[i], word, stack[1], 0, max_err, stack+1);
   }
   PrintResults(results);
+  delete[] stack;
 }
 
 void Search(std::priority_queue<ResultElement>& results, TrieElement& trieElt, char* word, char* buff, int err, int limit, char** stack)

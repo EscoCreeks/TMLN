@@ -12,6 +12,17 @@ struct ResultElement
   char dist;
 };
 
+struct ResultElementVectorized
+{
+  ResultElementVectorized(char* str_, int freq_, int dist_)
+    : str(str_), freq(freq_), dist(dist_)
+  {}
+  bool operator<(const ResultElementVectorized& res) const;
+  char* str;
+  int freq;
+  char dist;
+};
+
 template<typename T1>
 void StartSearch(Trie& trie, char* word, int max_err);
 

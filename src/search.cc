@@ -6,8 +6,19 @@ inline bool ResultElement::operator<(const ResultElement& res) const
   return dist < res.dist && freq > res.freq && strcmp(str,res.str) >= 0;
 }
 
+inline bool ResultElementVectorized::operator<(const ResultElementVectorized& res) const
+{
+  return freq > res.freq && strcmp(str,res.str) >= 0;
+}
+
 template <typename T1>
 void AddResult(T1& results, char** stack, TrieElement& trieElt, int err)
+{
+  std::cout << "COUCOU, JE NE SUIS PAS SPECIALISEE" << std::endl;
+}
+
+template <>
+void AddResult<std::priority_queue<ResultElement>>(std::priority_queue<ResultElement>& results, char** stack, TrieElement& trieElt, int err)
 {
   static const int usualSize = 15;
   int count = 0;
@@ -36,8 +47,74 @@ void AddResult(T1& results, char** stack, TrieElement& trieElt, int err)
   results.emplace(str, trieElt.GetFreq(), err);
 }
 
+template <>
+void AddResult<std::vector<std::priority_queue<ResultElementVectorized>>>(std::vector<std::priority_queue<ResultElementVectorized>>& results, char** stack, TrieElement& trieElt, int err)
+{
+  static const int usualSize = 15;
+  int count = 0;
+  int buffsize = 0;
+  char* str = 0;
+
+  while (*stack != nullptr)
+  {
+    // if (count % usualSize == 0)
+    //   str = static_cast<char*>(realloc(str, count + usualSize));
+    ++count;
+    buffsize += strlen(*stack);
+    --stack;
+  }
+  str = new char[buffsize + 1];
+  str[0] = '\0';
+  while (count)
+  {
+    ++stack;
+    strcat(str, *stack);
+    --count;
+  }
+#ifndef NDEBUG
+  std::cerr << "found " << str << std::endl;
+#endif
+  results[err].emplace(str, trieElt.GetFreq(), err);
+}
+
+template <>
+void AddResult<std::vector<ResultElement>>(std::vector<ResultElement>& results, char** stack, TrieElement& trieElt, int err)
+{
+  static const int usualSize = 15;
+  int count = 0;
+  int buffsize = 0;
+  char* str = 0;
+
+  while (*stack != nullptr)
+  {
+    // if (count % usualSize == 0)
+    //   str = static_cast<char*>(realloc(str, count + usualSize));
+    ++count;
+    buffsize += strlen(*stack);
+    --stack;
+  }
+  str = new char[buffsize + 1];
+  str[0] = '\0';
+  while (count)
+  {
+    ++stack;
+    strcat(str, *stack);
+    --count;
+  }
+#ifndef NDEBUG
+  std::cerr << "found " << str << std::endl;
+#endif
+  results.emplace_back(str, trieElt.GetFreq(), err);
+}
+
 template <typename T1>
 void PrintResults(T1& results)
+{
+  std::cout << "COUCOU JE NE SUIS PAS SPECIALISEE" << std::endl;
+}
+
+template<>
+void PrintResults<std::priority_queue<ResultElement>>(std::priority_queue<ResultElement>& results)
 {
   while(!results.empty())
   {
@@ -48,6 +125,43 @@ void PrintResults(T1& results)
               << "}";
     delete[] elt.str;
     results.pop();
+  }
+}
+
+template<>
+void PrintResults<std::vector<std::priority_queue<ResultElement>>>(std::vector<std::priority_queue<ResultElement>>& results)
+{
+  for (int i = 0; i < 3; ++i)
+  {
+    while(!results[i].empty())
+    {
+      const ResultElement& elt = results[i].top();
+      std::cout << "{\"word\":\"" << elt.str
+        << "\",\"freq\":" << elt.freq
+        << ",\"distance\":" << static_cast<int>(elt.dist)
+        << "}";
+      delete[] elt.str;
+      results[i].pop();
+    }
+  }
+}
+
+bool CompareResultElement(const ResultElement& left, const ResultElement& right)
+{
+  return left.dist < right.dist && left.freq > right.freq && strcmp(left.str,right.str) >= 0;
+}
+
+template<>
+void PrintResults<std::vector<ResultElement>>(std::vector<ResultElement>& results)
+{
+  std::sort(results.begin(), results.end(), CompareResultElement);
+  for (auto& elt : results)
+  {
+    std::cout << "{\"word\":\"" << elt.str
+      << "\",\"freq\":" << elt.freq
+      << ",\"distance\":" << static_cast<int>(elt.dist)
+      << "}";
+    delete[] elt.str;
   }
 }
 

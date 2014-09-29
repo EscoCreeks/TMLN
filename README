@@ -54,8 +54,8 @@ Pour compiler ce projet, il suffit de faire ./configue && make
    ---------------------------------------------------------------------------
                                              \_________________________......
 
-    Avec une tel structure on peut se servir de mmap pour mapper le datablock directement en memoire, sans avec a se
-    preocuper de la copie. Dans l'idee, on a choisi de faviser les pagefault et eviter de copier tout le fichier en
+    Avec une tel structure on peut se servir de mmap pour mapper le datablock directement en memoire, sans avoir à se
+    préoccuper de la copie. Dans l'idee, on a choisi de favoriser les pagefault et eviter de copier tout le fichier en
     memoire.
 
     Enfin, pour la recherche, on n'utilise pas de calcul de distance de
@@ -102,11 +102,6 @@ Pour compiler ce projet, il suffit de faire ./configue && make
     pour être optimal pour la recherche d'information sur une base de données
     tirées d'une multitudes de sources différentes.
 
-  5. Proposez un réglage automatique de la distance pour un programme qui prend
-     juste une chaîne de caractères en entrée, donner le processus d’évaluation
-     ainsi que les résultats.
-
-    // FIXME comprend pas la question
 
   6. Comment comptez vous améliorer les performances de votre programme
 
@@ -114,4 +109,4 @@ Pour compiler ce projet, il suffit de faire ./configue && make
     plus en amont, lors de la sérialisation de notre Patricia Trie. En effet, il
     serait efficace de pouvoir merger des branches qui se termineraient de la
     même façon, et ainsi prendre moins d'espace en mémoire.
-    // FIXME t'as des idées ?
+   
